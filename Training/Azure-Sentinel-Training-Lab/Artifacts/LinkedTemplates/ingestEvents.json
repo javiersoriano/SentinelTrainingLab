@@ -34,7 +34,6 @@
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
             "name": "[guid(resourceGroup().id, variables('automationAccountName'), 'automation-contrib')]",
-            "scope": "[resourceGroup().id]",
             "dependsOn": [
                 "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
             ],
