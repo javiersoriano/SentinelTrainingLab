@@ -11,8 +11,7 @@
     },
     "functions": [],
     "variables": {
-        "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]",
-        "storageAccountName": "[toLower(concat('st', uniqueString(resourceGroup().id)))]"
+        "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -20,24 +19,6 @@
             "apiVersion": "2023-01-31",
             "name": "[variables('identityName')]",
             "location": "[resourceGroup().location]"
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2022-09-01",
-            "name": "[variables('storageAccountName')]",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "SecurityControl": "ignore"
-            },
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "StorageV2",
-            "properties": {
-                "allowBlobPublicAccess": false,
-                "minimumTlsVersion": "TLS1_2",
-                "allowSharedKeyAccess": false
-            }
         },
         {
             "type": "Microsoft.Resources/deploymentScripts",
@@ -52,8 +33,7 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]"
             ],
             "properties": {
                 "forceUpdateTag": "1",
@@ -76,29 +56,10 @@
                         "value": "[parameters('WorkspaceName')]"
                     }
                 ],
-                "storageAccountSettings": {
-                    "storageAccountName": "[variables('storageAccountName')]",
-                    "authenticationMode": "ManagedIdentity"
-                },
                 "scriptContent": "set -e\nworkdir=\"$(pwd)\"\nrepo_zip=\"$workdir/sentinel-training-demo.zip\"\nrepo_dir=\"$workdir/sentinel-training-demo\"\nscript_path=\"$workdir/IngestCSV.ps1\"\n\nexport REPO_ZIP=\"$repo_zip\"\nexport REPO_DIR=\"$repo_dir\"\n\nif [ ! -d \"$repo_dir\" ]; then\n  curl -L -o \"$repo_zip\" \"https://github.com/kapetanios55/SentinelTrainingDemo/archive/refs/heads/master.zip\"\n  python - <<'PY'\nimport zipfile, os\nzip_path = os.environ.get('REPO_ZIP')\nout_dir = os.environ.get('REPO_DIR')\nwith zipfile.ZipFile(zip_path, 'r') as zf:\n    zf.extractall(out_dir)\nPY\nfi\n\nroot_dir=\"$repo_dir/SentinelTrainingDemo-master\"\ncustom_path=\"$root_dir/Training/Azure-Sentinel-Training-Lab/Artifacts/Telemetry\"\ntemplates_path=\"$workdir/DCRTemplates\"\nmkdir -p \"$templates_path\"\n\ncurl -L -o \"$script_path\" \"https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/IngestCSV.ps1\"\n\npwsh \"$script_path\" -SubscriptionId \"$SUBSCRIPTION_ID\" -ResourceGroupName \"$RESOURCE_GROUP_NAME\" -Location \"$LOCATION\" -WorkspaceName \"$WORKSPACE_NAME\" -TelemetryPath \"$custom_path\" -TemplatesOutputPath \"$templates_path\" -Deploy -Ingest\n",
                 "timeout": "PT30M",
                 "cleanupPreference": "Always",
                 "retentionInterval": "P1D"
-            }
-        },
-        {
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2022-04-01",
-            "name": "[guid(variables('storageAccountName'), 'script-blob')]",
-            "scope": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-                "[resourceId('Microsoft.Resources/deploymentScripts', 'runPowerShellInline')]"
-            ],
-            "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName')), '2023-01-31').principalId]"
             }
         }
     ],
