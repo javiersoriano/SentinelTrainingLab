@@ -16,6 +16,12 @@
     },
     "resources": [
         {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2023-01-31",
+            "name": "[variables('identityName')]",
+            "location": "[resourceGroup().location]"
+        },
+        {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-09-01",
             "name": "[variables('storageAccountName')]",
@@ -30,7 +36,7 @@
             "properties": {
                 "allowBlobPublicAccess": false,
                 "minimumTlsVersion": "TLS1_2",
-                "allowSharedKeyAccess": true
+                "allowSharedKeyAccess": false
             }
         },
         {
@@ -39,7 +45,14 @@
             "name": "runPowerShellInline",
             "location": "[resourceGroup().location]",
             "kind": "AzureCLI",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]": {}
+                }
+            },
             "dependsOn": [
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
@@ -63,6 +76,10 @@
                         "value": "[parameters('WorkspaceName')]"
                     }
                 ],
+                "storageAccountSettings": {
+                    "storageAccountName": "[variables('storageAccountName')]",
+                    "authenticationMode": "ManagedIdentity"
+                },
                 "scriptContent": "set -e\nworkdir=\"$(pwd)\"\nrepo_zip=\"$workdir/sentinel-training-demo.zip\"\nrepo_dir=\"$workdir/sentinel-training-demo\"\nscript_path=\"$workdir/IngestCSV.ps1\"\n\nexport REPO_ZIP=\"$repo_zip\"\nexport REPO_DIR=\"$repo_dir\"\n\nif [ ! -d \"$repo_dir\" ]; then\n  curl -L -o \"$repo_zip\" \"https://github.com/kapetanios55/SentinelTrainingDemo/archive/refs/heads/master.zip\"\n  python - <<'PY'\nimport zipfile, os\nzip_path = os.environ.get('REPO_ZIP')\nout_dir = os.environ.get('REPO_DIR')\nwith zipfile.ZipFile(zip_path, 'r') as zf:\n    zf.extractall(out_dir)\nPY\nfi\n\nroot_dir=\"$repo_dir/SentinelTrainingDemo-master\"\ncustom_path=\"$root_dir/Training/Azure-Sentinel-Training-Lab/Artifacts/Telemetry\"\ntemplates_path=\"$workdir/DCRTemplates\"\nmkdir -p \"$templates_path\"\n\ncurl -L -o \"$script_path\" \"https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/IngestCSV.ps1\"\n\npwsh \"$script_path\" -SubscriptionId \"$SUBSCRIPTION_ID\" -ResourceGroupName \"$RESOURCE_GROUP_NAME\" -Location \"$LOCATION\" -WorkspaceName \"$WORKSPACE_NAME\" -TelemetryPath \"$custom_path\" -TemplatesOutputPath \"$templates_path\" -Deploy -Ingest\n",
                 "timeout": "PT30M",
                 "cleanupPreference": "Always",
