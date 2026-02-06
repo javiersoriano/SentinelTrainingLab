@@ -141,7 +141,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('_artifactsLocation'), concat('Artifacts/LinkedTemplates/ingestEvents.json?v=', parameters('artifactsVersion')))]",
+                    "uri": "[uri(variables('_artifactsLocation'), concat('Artifacts/LinkedTemplates/ingestEvents-v2.json?v=', parameters('artifactsVersion')))]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
