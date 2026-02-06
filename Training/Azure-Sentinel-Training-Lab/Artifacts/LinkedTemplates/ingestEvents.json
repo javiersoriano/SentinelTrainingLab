@@ -11,55 +11,90 @@
     },
     "functions": [],
     "variables": {
-        "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]"
+        "automationAccountName": "[concat('sentineltraining', uniqueString(resourceGroup().id))]",
+        "runbookName": "IngestTrainingTelemetry",
+        "scheduleName": "IngestTrainingTelemetryOnce"
     },
     "resources": [
         {
-            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-            "apiVersion": "2023-01-31",
-            "name": "[variables('identityName')]",
-            "location": "[resourceGroup().location]"
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[variables('automationAccountName')]",
+            "location": "[resourceGroup().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "sku": {
+                    "name": "Basic"
+                }
+            }
         },
         {
-            "type": "Microsoft.Resources/deploymentScripts",
-            "apiVersion": "2023-08-01",
-            "name": "runPowerShellInline",
-            "location": "[resourceGroup().location]",
-            "kind": "AzureCLI",
-            "identity": {
-                "type": "UserAssigned",
-                "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]": {}
-                }
-            },
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2022-04-01",
+            "name": "[guid(resourceGroup().id, variables('automationAccountName'), 'automation-contrib')]",
+            "scope": "[resourceGroup().id]",
             "dependsOn": [
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('identityName'))]"
+                "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
             ],
             "properties": {
-                "forceUpdateTag": "1",
-                "azCliVersion": "2.57.0",
-                "environmentVariables": [
-                    {
-                        "name": "SUBSCRIPTION_ID",
-                        "value": "[subscription().subscriptionId]"
-                    },
-                    {
-                        "name": "RESOURCE_GROUP_NAME",
-                        "value": "[resourceGroup().name]"
-                    },
-                    {
-                        "name": "LOCATION",
-                        "value": "[resourceGroup().location]"
-                    },
-                    {
-                        "name": "WORKSPACE_NAME",
-                        "value": "[parameters('WorkspaceName')]"
-                    }
-                ],
-                "scriptContent": "set -e\nworkdir=\"$(pwd)\"\nrepo_zip=\"$workdir/sentinel-training-demo.zip\"\nrepo_dir=\"$workdir/sentinel-training-demo\"\nscript_path=\"$workdir/IngestCSV.ps1\"\n\nexport REPO_ZIP=\"$repo_zip\"\nexport REPO_DIR=\"$repo_dir\"\n\nif [ ! -d \"$repo_dir\" ]; then\n  curl -L -o \"$repo_zip\" \"https://github.com/kapetanios55/SentinelTrainingDemo/archive/refs/heads/master.zip\"\n  python - <<'PY'\nimport zipfile, os\nzip_path = os.environ.get('REPO_ZIP')\nout_dir = os.environ.get('REPO_DIR')\nwith zipfile.ZipFile(zip_path, 'r') as zf:\n    zf.extractall(out_dir)\nPY\nfi\n\nroot_dir=\"$repo_dir/SentinelTrainingDemo-master\"\ncustom_path=\"$root_dir/Training/Azure-Sentinel-Training-Lab/Artifacts/Telemetry\"\ntemplates_path=\"$workdir/DCRTemplates\"\nmkdir -p \"$templates_path\"\n\ncurl -L -o \"$script_path\" \"https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/IngestCSV.ps1\"\n\npwsh \"$script_path\" -SubscriptionId \"$SUBSCRIPTION_ID\" -ResourceGroupName \"$RESOURCE_GROUP_NAME\" -Location \"$LOCATION\" -WorkspaceName \"$WORKSPACE_NAME\" -TelemetryPath \"$custom_path\" -TemplatesOutputPath \"$templates_path\" -Deploy -Ingest\n",
-                "timeout": "PT30M",
-                "cleanupPreference": "Always",
-                "retentionInterval": "P1D"
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName')), '2019-06-01', 'Full').identity.principalId]"
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(variables('automationAccountName'), '/', variables('runbookName'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
+            ],
+            "properties": {
+                "runbookType": "PowerShell",
+                "logProgress": true,
+                "logVerbose": true,
+                "publishContentLink": {
+                    "uri": "https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/RunIngest.ps1"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/schedules",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(variables('automationAccountName'), '/', variables('scheduleName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
+            ],
+            "properties": {
+                "frequency": "OneTime",
+                "startTime": "[utcNow('o')]",
+                "timeZone": "UTC"
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/jobSchedules",
+            "apiVersion": "2019-06-01",
+            "name": "[guid(variables('automationAccountName'), variables('runbookName'), variables('scheduleName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts/runbooks', variables('automationAccountName'), variables('runbookName'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts/schedules', variables('automationAccountName'), variables('scheduleName'))]",
+                "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, variables('automationAccountName'), 'automation-contrib'))]"
+            ],
+            "properties": {
+                "runbook": {
+                    "name": "[variables('runbookName')]"
+                },
+                "schedule": {
+                    "name": "[variables('scheduleName')]"
+                },
+                "parameters": {
+                    "SubscriptionId": "[subscription().subscriptionId]",
+                    "ResourceGroupName": "[resourceGroup().name]",
+                    "Location": "[resourceGroup().location]",
+                    "WorkspaceName": "[parameters('WorkspaceName')]"
+                }
             }
         }
     ],

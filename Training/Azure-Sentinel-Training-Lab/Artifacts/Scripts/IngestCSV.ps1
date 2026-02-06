@@ -160,7 +160,68 @@ if (-not $TemplatesOutputPath) {
 }
 
 function Assert-AzCli {
-    $null = Get-Command az -ErrorAction Stop
+    try {
+        $null = Get-Command az -ErrorAction Stop
+        return $true
+    } catch {
+        return $false
+    }
+}
+
+function Get-ManagementAccessToken {
+    if (Assert-AzCli) {
+        return (az account get-access-token --resource "https://management.azure.com/" --query accessToken -o tsv)
+    }
+
+    if (-not (Get-Module -ListAvailable -Name Az.Accounts)) {
+        throw "Az.Accounts module is required when Azure CLI is unavailable."
+    }
+
+    Import-Module Az.Accounts -ErrorAction Stop
+    $token = (Get-AzAccessToken -ResourceUrl "https://management.azure.com/").Token
+    if (-not $token) {
+        throw "Failed to acquire management access token."
+    }
+    return $token
+}
+
+function Invoke-ArmRest {
+    param(
+        [string]$Method,
+        [string]$Uri,
+        [string]$JsonBody
+    )
+
+    if (Assert-AzCli) {
+        if ($Method -eq "GET") {
+            return az rest --method get --uri $Uri | ConvertFrom-Json
+        }
+        if (-not $JsonBody -or -not $JsonBody.Trim()) {
+            throw "Request body is empty."
+        }
+        $tempFile = [System.IO.Path]::GetTempFileName()
+        try {
+            $JsonBody | Out-File -FilePath $tempFile -Encoding utf8
+            $null = az rest --method put --uri $Uri --headers "Content-Type=application/json" --body "@$tempFile"
+            if ($LASTEXITCODE -ne 0) {
+                throw "az rest PUT failed with exit code $LASTEXITCODE for $Uri"
+            }
+        } finally {
+            Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
+        }
+        return $null
+    }
+
+    $headers = @{ Authorization = "Bearer $(Get-ManagementAccessToken)" }
+    if ($Method -eq "GET") {
+        return Invoke-RestMethod -Method Get -Uri $Uri -Headers $headers
+    }
+
+    if (-not $JsonBody -or -not $JsonBody.Trim()) {
+        throw "Request body is empty."
+    }
+    $headers["Content-Type"] = "application/json"
+    return Invoke-RestMethod -Method Put -Uri $Uri -Headers $headers -Body $JsonBody
 }
 
 function Read-TelemetryData {
@@ -193,20 +254,7 @@ function Invoke-AzRestPutJson {
         [string]$JsonBody
     )
 
-    if (-not $JsonBody -or -not $JsonBody.Trim()) {
-        throw "Request body is empty."
-    }
-
-    $tempFile = [System.IO.Path]::GetTempFileName()
-    try {
-        $JsonBody | Out-File -FilePath $tempFile -Encoding utf8
-        $null = az rest --method put --uri $Uri --headers "Content-Type=application/json" --body "@$tempFile"
-        if ($LASTEXITCODE -ne 0) {
-            throw "az rest PUT failed with exit code $LASTEXITCODE for $Uri"
-        }
-    } finally {
-        Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
-    }
+    $null = Invoke-ArmRest -Method "PUT" -Uri $Uri -JsonBody $JsonBody
 }
 
 function Get-AccessToken {
@@ -231,7 +279,15 @@ function Get-AccessToken {
         return $response.access_token
     }
 
-    $token = az account get-access-token --resource "https://monitor.azure.com/" --query accessToken -o tsv
+    if (Assert-AzCli) {
+        $token = az account get-access-token --resource "https://monitor.azure.com/" --query accessToken -o tsv
+    } else {
+        if (-not (Get-Module -ListAvailable -Name Az.Accounts)) {
+            throw "Az.Accounts module is required when Azure CLI is unavailable."
+        }
+        Import-Module Az.Accounts -ErrorAction Stop
+        $token = (Get-AzAccessToken -ResourceUrl "https://monitor.azure.com/").Token
+    }
     if (-not $token) {
         throw "Failed to acquire access token. Ensure you're logged in with 'az login' or provide service principal credentials."
     }
@@ -245,7 +301,14 @@ function Resolve-WorkspaceResourceId {
         [string]$SubscriptionId
     )
 
-    $id = az monitor log-analytics workspace show -g $ResourceGroupName -n $WorkspaceName --subscription $SubscriptionId --query id -o tsv
+    if (Assert-AzCli) {
+        $id = az monitor log-analytics workspace show -g $ResourceGroupName -n $WorkspaceName --subscription $SubscriptionId --query id -o tsv
+    } else {
+        $apiVersion = "2022-10-01"
+        $uri = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.OperationalInsights/workspaces/$WorkspaceName?api-version=$apiVersion"
+        $workspace = Invoke-ArmRest -Method "GET" -Uri $uri
+        $id = $workspace.id
+    }
     if (-not $id) {
         throw "Unable to resolve workspace resource ID. Check the workspace name and resource group."
     }
@@ -263,7 +326,7 @@ function Initialize-CustomTable {
     $tableUri = "https://management.azure.com${WorkspaceResourceId}/tables/${TableName}?api-version=$apiVersion"
 
     try {
-        $table = az rest --method get --uri $tableUri | ConvertFrom-Json
+        $table = Invoke-ArmRest -Method "GET" -Uri $tableUri
         if ($table.properties.provisioningState -eq "Succeeded") {
             $existingColumns = Get-TableSchemaColumns -WorkspaceResourceId $WorkspaceResourceId -TableName $TableName
             $existingNames = @($existingColumns | ForEach-Object { $_.name })
@@ -306,7 +369,7 @@ function Initialize-CustomTable {
             for ($i = 0; $i -lt 10; $i++) {
                 Start-Sleep -Seconds 5
                 try {
-                    $table = az rest --method get --uri $tableUri | ConvertFrom-Json
+                    $table = Invoke-ArmRest -Method "GET" -Uri $tableUri
                     if ($table.properties.provisioningState -eq "Succeeded") {
                         return
                     }
@@ -354,7 +417,7 @@ function Initialize-CustomTable {
     for ($i = 0; $i -lt 10; $i++) {
         Start-Sleep -Seconds 5
         try {
-            $table = az rest --method get --uri $tableUri | ConvertFrom-Json
+            $table = Invoke-ArmRest -Method "GET" -Uri $tableUri
             if ($table.properties.provisioningState -eq "Succeeded") {
                 return
             }
@@ -379,7 +442,7 @@ function Initialize-Dce {
     $dce = $null
 
     try {
-        $dce = az rest --method get --uri "https://management.azure.com${dceId}?api-version=$apiVersion" | ConvertFrom-Json
+        $dce = Invoke-ArmRest -Method "GET" -Uri "https://management.azure.com${dceId}?api-version=$apiVersion"
     } catch {
         $dce = $null
     }
@@ -397,7 +460,7 @@ function Initialize-Dce {
         } | ConvertTo-Json -Depth 10 -Compress
 
         Invoke-AzRestPutJson -Uri "https://management.azure.com${dceId}?api-version=$apiVersion" -JsonBody $body
-        $dce = az rest --method get --uri "https://management.azure.com${dceId}?api-version=$apiVersion" | ConvertFrom-Json
+        $dce = Invoke-ArmRest -Method "GET" -Uri "https://management.azure.com${dceId}?api-version=$apiVersion"
     }
 
     return $dce
@@ -488,7 +551,7 @@ function Get-DcrImmutableId {
     )
 
     $apiVersion = "2023-03-11"
-    $dcr = az rest --method get --uri "https://management.azure.com${DcrId}?api-version=$apiVersion" | ConvertFrom-Json
+    $dcr = Invoke-ArmRest -Method "GET" -Uri "https://management.azure.com${DcrId}?api-version=$apiVersion"
     return $dcr.properties.immutableId
 }
 
@@ -500,7 +563,7 @@ function Get-TableSchemaColumns {
 
     $apiVersion = "2022-10-01"
     $tableUri = "https://management.azure.com${WorkspaceResourceId}/tables/${TableName}?api-version=$apiVersion"
-    $table = az rest --method get --uri $tableUri | ConvertFrom-Json
+    $table = Invoke-ArmRest -Method "GET" -Uri $tableUri
     $schema = $table.properties.schema
     if ($schema -and ($schema.PSObject.Properties.Match('columns').Count -gt 0) -and $schema.columns) {
         return $schema.columns
