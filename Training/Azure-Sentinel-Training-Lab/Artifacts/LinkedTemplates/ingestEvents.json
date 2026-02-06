@@ -7,6 +7,13 @@
             "metadata": {
                 "description": "Log Analytics workspace name"
             }
+        },
+        "scheduleStartTime": {
+            "type": "string",
+            "defaultValue": "[dateTimeAdd(utcNow(), 'PT5M')]",
+            "metadata": {
+                "description": "UTC start time for the one-time schedule"
+            }
         }
     },
     "functions": [],
@@ -56,7 +63,7 @@
             ],
             "properties": {
                 "frequency": "OneTime",
-                "startTime": "[dateTimeAdd(utcNow(), 'PT5M')]",
+                "startTime": "[parameters('scheduleStartTime')]",
                 "timeZone": "UTC"
             }
         },
