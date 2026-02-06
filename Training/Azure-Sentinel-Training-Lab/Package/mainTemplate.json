@@ -41,7 +41,7 @@
         },
         "scheduleStartTime": {
             "type": "string",
-            "defaultValue": "[dateTimeAdd(utcNow(), 'PT5M')]",
+            "defaultValue": "[dateTimeAdd(utcNow(), 'PT10M')]",
             "metadata": {
                 "description": "UTC start time for the one-time ingestion schedule"
             }
