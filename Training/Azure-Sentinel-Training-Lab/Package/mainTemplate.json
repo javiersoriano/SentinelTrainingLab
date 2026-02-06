@@ -161,13 +161,18 @@
                             "metadata": {
                                 "description": "UTC start time for the one-time schedule"
                             }
+                        },
+                        "scheduleName": {
+                            "type": "string",
+                            "metadata": {
+                                "description": "Unique schedule name for the runbook"
+                            }
                         }
                     },
                     "functions": [],
                     "variables": {
                         "automationAccountName": "[concat('sentineltraining', uniqueString(resourceGroup().id))]",
-                        "runbookName": "IngestTrainingTelemetry",
-                        "scheduleName": "IngestTrainingTelemetryOnce"
+                        "runbookName": "IngestTrainingTelemetry"
                     },
                     "resources": [
                         {
@@ -204,7 +209,7 @@
                         {
                             "type": "Microsoft.Automation/automationAccounts/schedules",
                             "apiVersion": "2019-06-01",
-                            "name": "[concat(variables('automationAccountName'), '/IngestTrainingTelemetryOnce')]",
+                            "name": "[concat(variables('automationAccountName'), '/', parameters('scheduleName'))]",
                             "dependsOn": [
                                 "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
                             ],
@@ -217,17 +222,17 @@
                         {
                             "type": "Microsoft.Automation/automationAccounts/jobSchedules",
                             "apiVersion": "2019-06-01",
-                            "name": "[concat(variables('automationAccountName'), '/', guid(variables('automationAccountName'), 'IngestTrainingTelemetry', 'IngestTrainingTelemetryOnce'))]",
+                            "name": "[concat(variables('automationAccountName'), '/', guid(variables('automationAccountName'), 'IngestTrainingTelemetry', parameters('scheduleName')))]",
                             "dependsOn": [
                                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks', variables('automationAccountName'), 'IngestTrainingTelemetry')]",
-                                "[resourceId('Microsoft.Automation/automationAccounts/schedules', variables('automationAccountName'), 'IngestTrainingTelemetryOnce')]"
+                                "[resourceId('Microsoft.Automation/automationAccounts/schedules', variables('automationAccountName'), parameters('scheduleName'))]"
                             ],
                             "properties": {
                                 "runbook": {
                                     "name": "IngestTrainingTelemetry"
                                 },
                                 "schedule": {
-                                    "name": "IngestTrainingTelemetryOnce"
+                                    "name": "[parameters('scheduleName')]"
                                 },
                                 "parameters": {
                                     "SubscriptionId": "[subscription().subscriptionId]",
