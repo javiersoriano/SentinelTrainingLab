@@ -49,7 +49,7 @@
         }
     },
     "variables": {
-        "_artifactsLocation": "https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Solutions/Training/Azure-Sentinel-Training-Lab/",
+        "_artifactsLocation": "https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/",
         "sourceId": "sentineltrainingdemo.azure-sentinel-training-lab",
         "_sourceId": "[variables('sourceId')]",
         "workbookContentId": "ATLInvestigationInsights",
