@@ -64,6 +64,7 @@
             "type": "Microsoft.Automation/automationAccounts/schedules",
             "apiVersion": "2019-06-01",
             "name": "[concat(variables('automationAccountName'), '/', variables('scheduleName'))]",
+            "condition": false,
             "dependsOn": [
                 "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
             ],
@@ -71,30 +72,6 @@
                 "frequency": "OneTime",
                 "startTime": "[utcNow('o')]",
                 "timeZone": "UTC"
-            }
-        },
-        {
-            "type": "Microsoft.Automation/automationAccounts/jobSchedules",
-            "apiVersion": "2019-06-01",
-            "name": "[concat(variables('automationAccountName'), '/', guid(variables('automationAccountName'), variables('runbookName'), variables('scheduleName')))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts/runbooks', variables('automationAccountName'), variables('runbookName'))]",
-                "[resourceId('Microsoft.Automation/automationAccounts/schedules', variables('automationAccountName'), variables('scheduleName'))]",
-                "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, variables('automationAccountName'), 'automation-contrib'))]"
-            ],
-            "properties": {
-                "runbook": {
-                    "name": "[variables('runbookName')]"
-                },
-                "schedule": {
-                    "name": "[variables('scheduleName')]"
-                },
-                "parameters": {
-                    "SubscriptionId": "[subscription().subscriptionId]",
-                    "ResourceGroupName": "[resourceGroup().name]",
-                    "Location": "[resourceGroup().location]",
-                    "WorkspaceName": "[parameters('WorkspaceName')]"
-                }
             }
         }
     ],
