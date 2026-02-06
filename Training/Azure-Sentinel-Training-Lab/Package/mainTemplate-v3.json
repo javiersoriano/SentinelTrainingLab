@@ -41,7 +41,7 @@
         },
         "enableIngestion": {
             "type": "bool",
-            "defaultValue": false,
+            "defaultValue": true,
             "metadata": {
                 "description": "Whether to run the ingestEvents deployment script. Disabled for tenants that block storage account key auth."
             }
@@ -88,7 +88,8 @@
         "huntingQueryContentId1": "ATLOAuthApplications",
         "_huntingQueryContentId1": "[variables('huntingQueryContentId1')]",
         "huntingQueryContentId2": "ATLsolorigateInventoryCheck",
-        "_huntingQueryContentId2": "[variables('huntingQueryContentId2')]"
+        "_huntingQueryContentId2": "[variables('huntingQueryContentId2')]",
+        "automationAccountName": "[concat('sentineltraining', uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -149,6 +150,19 @@
                         "value": "[parameters('workspace')]"
                     }
                 }
+            }
+        },
+        {
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2022-04-01",
+            "name": "[guid(resourceGroup().id, variables('automationAccountName'), 'automation-monitoring-contrib')]",
+            "condition": "[parameters('enableIngestion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'ingestEvents')]"
+            ],
+            "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                "principalId": "[reference(resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName')), '2019-06-01', 'Full').identity.principalId]"
             }
         },
         {
