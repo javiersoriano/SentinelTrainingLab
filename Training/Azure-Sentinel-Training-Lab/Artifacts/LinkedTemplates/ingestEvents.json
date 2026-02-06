@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "WorkspaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Log Analytics workspace name"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {
+        "identityName": "[concat('userIdentity',uniqueString(resourceGroup().id))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2020-10-01",
+            "name": "runPowerShellInline",
+            "location": "[resourceGroup().location]",
+                        "kind": "AzureCLI",
+            "properties": {
+                "forceUpdateTag": "1",
+                                "azCliVersion": "2.57.0",
+                                "environmentVariables": [
+                                    {
+                                        "name": "SUBSCRIPTION_ID",
+                                        "value": "[subscription().subscriptionId]"
+                                    },
+                                    {
+                                        "name": "RESOURCE_GROUP_NAME",
+                                        "value": "[resourceGroup().name]"
+                                    },
+                                    {
+                                        "name": "LOCATION",
+                                        "value": "[resourceGroup().location]"
+                                    },
+                                    {
+                                        "name": "WORKSPACE_NAME",
+                                        "value": "[parameters('WorkspaceName')]"
+                                    }
+                                ],
+                                "scriptContent": "set -e\nworkdir=\"$(pwd)\"\nrepo_zip=\"$workdir/azure-sentinel.zip\"\nrepo_dir=\"$workdir/azure-sentinel\"\nscript_path=\"$workdir/IngestCSV.ps1\"\n\nexport REPO_ZIP=\"$repo_zip\"\nexport REPO_DIR=\"$repo_dir\"\n\nif [ ! -d \"$repo_dir\" ]; then\n  curl -L -o \"$repo_zip\" \"https://github.com/Azure/Azure-Sentinel/archive/refs/heads/master.zip\"\n  python - <<'PY'\nimport zipfile, os\nzip_path = os.environ.get('REPO_ZIP')\nout_dir = os.environ.get('REPO_DIR')\nwith zipfile.ZipFile(zip_path, 'r') as zf:\n    zf.extractall(out_dir)\nPY\nfi\n\nroot_dir=\"$repo_dir/Azure-Sentinel-master\"\ncustom_path=\"$root_dir/Solutions/Training/Azure-Sentinel-Training-Lab/Artifacts/Telemetry/Custom\"\nbuiltin_path=\"$root_dir/Solutions/Training/Azure-Sentinel-Training-Lab/Artifacts/Telemetry/BuiltIn\"\ntemplates_path=\"$workdir/DCRTemplates\"\nmkdir -p \"$templates_path\"\n\ncurl -L -o \"$script_path\" \"https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Solutions/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/IngestCSV.ps1\"\n\npwsh \"$script_path\" -SubscriptionId \"$SUBSCRIPTION_ID\" -ResourceGroupName \"$RESOURCE_GROUP_NAME\" -Location \"$LOCATION\" -WorkspaceName \"$WORKSPACE_NAME\" -TelemetryPath \"$custom_path\" -BuiltInTelemetryPath \"$builtin_path\" -TemplatesOutputPath \"$templates_path\" -Deploy -Ingest\n",
+                "timeout": "PT30M",
+                "cleanupPreference": "Always",
+                "retentionInterval": "P1D"
+            }
+        }
+    ],
+    "outputs": {}
+}
