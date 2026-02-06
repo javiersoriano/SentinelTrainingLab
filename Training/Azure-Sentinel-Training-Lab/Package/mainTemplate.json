@@ -91,7 +91,7 @@
         "_huntingQueryContentId2": "[variables('huntingQueryContentId2')]",
         "automationAccountName": "[concat('sentineltraining', uniqueString(resourceGroup().id))]",
         "runbookName": "IngestTrainingTelemetry",
-        "scheduleName": "IngestTrainingTelemetryOnce"
+        "scheduleName": "[concat('IngestTrainingTelemetryOnce-', uniqueString(resourceGroup().id, deployment().name))]"
     },
     "resources": [
         {
@@ -246,6 +246,9 @@
                     },
                     "scheduleStartTime": {
                         "value": "[parameters('scheduleStartTime')]"
+                    },
+                    "scheduleName": {
+                        "value": "[variables('scheduleName')]"
                     }
                 }
             }
