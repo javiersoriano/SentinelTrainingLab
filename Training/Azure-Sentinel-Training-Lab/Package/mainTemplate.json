@@ -89,7 +89,9 @@
         "_huntingQueryContentId1": "[variables('huntingQueryContentId1')]",
         "huntingQueryContentId2": "ATLsolorigateInventoryCheck",
         "_huntingQueryContentId2": "[variables('huntingQueryContentId2')]",
-        "automationAccountName": "[concat('sentineltraining', uniqueString(resourceGroup().id))]"
+        "automationAccountName": "[concat('sentineltraining', uniqueString(resourceGroup().id))]",
+        "runbookName": "IngestTrainingTelemetry",
+        "scheduleName": "IngestTrainingTelemetryOnce"
     },
     "resources": [
         {
