@@ -1,0 +1,129 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-ABAPAppLog": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "ClientID"
+          },
+          {
+            "type": "string",
+            "name": "LogNumber"
+          },
+          {
+            "type": "string",
+            "name": "Object"
+          },
+          {
+            "type": "string",
+            "name": "SubObject"
+          },
+          {
+            "type": "string",
+            "name": "ExternalID"
+          },
+          {
+            "type": "string",
+            "name": "AppLogDateTime__Jerusalem_"
+          },
+          {
+            "type": "string",
+            "name": "User"
+          },
+          {
+            "type": "string",
+            "name": "ProgramName"
+          },
+          {
+            "type": "string",
+            "name": "OperationMode"
+          },
+          {
+            "type": "string",
+            "name": "CallbackProgram"
+          },
+          {
+            "type": "string",
+            "name": "CallbackRoutine"
+          },
+          {
+            "type": "string",
+            "name": "ProblemClass"
+          },
+          {
+            "type": "string",
+            "name": "LogHandle"
+          },
+          {
+            "type": "string",
+            "name": "ContextDDIC"
+          },
+          {
+            "type": "string",
+            "name": "InternalMessageSerial"
+          },
+          {
+            "type": "string",
+            "name": "MessageType"
+          },
+          {
+            "type": "string",
+            "name": "MessageClass"
+          },
+          {
+            "type": "string",
+            "name": "MessageNumber"
+          },
+          {
+            "type": "string",
+            "name": "MessageText"
+          },
+          {
+            "type": "string",
+            "name": "LevelofDetail"
+          },
+          {
+            "type": "string",
+            "name": "SystemID"
+          },
+          {
+            "type": "string",
+            "name": "SystemNumber"
+          },
+          {
+            "type": "string",
+            "name": "Instance"
+          },
+          {
+            "type": "string",
+            "name": "Host"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project ClientID, LogNumber, Object, SubObject, ExternalID, AppLogDateTime__Jerusalem_, User, ProgramName, OperationMode, CallbackProgram, CallbackRoutine, ProblemClass, LogHandle, ContextDDIC, InternalMessageSerial, MessageType, MessageClass, MessageNumber, MessageText, LevelofDetail, SystemID, SystemNumber, Instance, Host, TimeGenerated",
+        "outputStream": "Custom-ABAPAppLog_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-ABAPAppLog"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

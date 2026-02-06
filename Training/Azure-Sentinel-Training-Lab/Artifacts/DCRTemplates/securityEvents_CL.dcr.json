@@ -1,0 +1,113 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-securityEvents": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "Account"
+          },
+          {
+            "type": "string",
+            "name": "AccountType"
+          },
+          {
+            "type": "string",
+            "name": "Computer"
+          },
+          {
+            "type": "string",
+            "name": "EventSourceName"
+          },
+          {
+            "type": "string",
+            "name": "Channel"
+          },
+          {
+            "type": "string",
+            "name": "Task"
+          },
+          {
+            "type": "string",
+            "name": "Level"
+          },
+          {
+            "type": "string",
+            "name": "EventData"
+          },
+          {
+            "type": "string",
+            "name": "EventID"
+          },
+          {
+            "type": "string",
+            "name": "Activity"
+          },
+          {
+            "type": "string",
+            "name": "SourceComputerId"
+          },
+          {
+            "type": "string",
+            "name": "EventOriginId"
+          },
+          {
+            "type": "string",
+            "name": "TimeCollected__UTC_"
+          },
+          {
+            "type": "string",
+            "name": "AccessList"
+          },
+          {
+            "type": "string",
+            "name": "AccessMask"
+          },
+          {
+            "type": "string",
+            "name": "AdditionalInfo"
+          },
+          {
+            "type": "string",
+            "name": "AdditionalInfo2"
+          },
+          {
+            "type": "string",
+            "name": "AuthenticationPackageName"
+          },
+          {
+            "type": "string",
+            "name": "CallerProcessId"
+          },
+          {
+            "type": "string",
+            "name": "RelativeTargetName"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project Account, AccountType, Computer, EventSourceName, Channel, Task, Level, EventData, EventID, Activity, SourceComputerId, EventOriginId, TimeCollected__UTC_, AccessList, AccessMask, AdditionalInfo, AdditionalInfo2, AuthenticationPackageName, CallerProcessId, RelativeTargetName, TimeGenerated",
+        "outputStream": "Custom-securityEvents_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-securityEvents"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

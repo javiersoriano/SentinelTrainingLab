@@ -1,0 +1,121 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-ABAPChangeDocsLog": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "ClientID"
+          },
+          {
+            "type": "string",
+            "name": "ObjectClass_s"
+          },
+          {
+            "type": "string",
+            "name": "ObjectID"
+          },
+          {
+            "type": "string",
+            "name": "ChangeNumber"
+          },
+          {
+            "type": "string",
+            "name": "User"
+          },
+          {
+            "type": "string",
+            "name": "TransactionCode"
+          },
+          {
+            "type": "string",
+            "name": "TypeofChange_Header"
+          },
+          {
+            "type": "string",
+            "name": "Language"
+          },
+          {
+            "type": "string",
+            "name": "Version"
+          },
+          {
+            "type": "string",
+            "name": "TableName"
+          },
+          {
+            "type": "string",
+            "name": "ChangedTableKey"
+          },
+          {
+            "type": "string",
+            "name": "FieldName"
+          },
+          {
+            "type": "string",
+            "name": "TypeofChange_Item"
+          },
+          {
+            "type": "string",
+            "name": "FlagText"
+          },
+          {
+            "type": "string",
+            "name": "UOMOld"
+          },
+          {
+            "type": "string",
+            "name": "ValueNew"
+          },
+          {
+            "type": "string",
+            "name": "SystemID"
+          },
+          {
+            "type": "string",
+            "name": "SystemNumber"
+          },
+          {
+            "type": "string",
+            "name": "Instance"
+          },
+          {
+            "type": "string",
+            "name": "Host"
+          },
+          {
+            "type": "string",
+            "name": "ValueOld2"
+          },
+          {
+            "type": "string",
+            "name": "ValueNew3"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project ClientID, ObjectClass_s, ObjectID, ChangeNumber, User, TransactionCode, TypeofChange_Header, Language, Version, TableName, ChangedTableKey, FieldName, TypeofChange_Item, FlagText, UOMOld, ValueNew, SystemID, SystemNumber, Instance, Host, ValueOld2, ValueNew3, TimeGenerated",
+        "outputStream": "Custom-ABAPChangeDocsLog_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-ABAPChangeDocsLog"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

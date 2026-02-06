@@ -1,0 +1,221 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-azureActivity_adele": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "C__table"
+          },
+          {
+            "type": "string",
+            "name": "C_TenantId"
+          },
+          {
+            "type": "string",
+            "name": "SourceSystem"
+          },
+          {
+            "type": "string",
+            "name": "CallerIpAddress"
+          },
+          {
+            "type": "string",
+            "name": "CategoryValue"
+          },
+          {
+            "type": "string",
+            "name": "CorrelationId"
+          },
+          {
+            "type": "string",
+            "name": "Authorization"
+          },
+          {
+            "type": "string",
+            "name": "Authorization_d"
+          },
+          {
+            "type": "string",
+            "name": "Claims"
+          },
+          {
+            "type": "string",
+            "name": "Claims_d"
+          },
+          {
+            "type": "string",
+            "name": "Level"
+          },
+          {
+            "type": "string",
+            "name": "OperationNameValue"
+          },
+          {
+            "type": "string",
+            "name": "Properties"
+          },
+          {
+            "type": "string",
+            "name": "Properties_d"
+          },
+          {
+            "type": "string",
+            "name": "Caller"
+          },
+          {
+            "type": "string",
+            "name": "EventDataId"
+          },
+          {
+            "type": "string",
+            "name": "EventSubmissionTimestamp__UTC_"
+          },
+          {
+            "type": "string",
+            "name": "HTTPRequest"
+          },
+          {
+            "type": "string",
+            "name": "OperationId"
+          },
+          {
+            "type": "string",
+            "name": "ResourceGroup"
+          },
+          {
+            "type": "string",
+            "name": "ResourceProviderValue"
+          },
+          {
+            "type": "string",
+            "name": "ActivityStatusValue"
+          },
+          {
+            "type": "string",
+            "name": "ActivitySubstatusValue"
+          },
+          {
+            "type": "string",
+            "name": "Hierarchy"
+          },
+          {
+            "type": "string",
+            "name": "TimeGenerated__UTC_"
+          },
+          {
+            "type": "string",
+            "name": "SubscriptionId"
+          },
+          {
+            "type": "string",
+            "name": "OperationName"
+          },
+          {
+            "type": "string",
+            "name": "ActivityStatus"
+          },
+          {
+            "type": "string",
+            "name": "ActivitySubstatus"
+          },
+          {
+            "type": "string",
+            "name": "Category"
+          },
+          {
+            "type": "string",
+            "name": "ResourceId"
+          },
+          {
+            "type": "string",
+            "name": "ResourceProvider"
+          },
+          {
+            "type": "string",
+            "name": "Resource"
+          },
+          {
+            "type": "string",
+            "name": "C_Type"
+          },
+          {
+            "type": "string",
+            "name": "C__ResourceId"
+          },
+          {
+            "type": "string",
+            "name": "OperationVersion"
+          },
+          {
+            "type": "string",
+            "name": "ResultType"
+          },
+          {
+            "type": "string",
+            "name": "ResultSignature"
+          },
+          {
+            "type": "string",
+            "name": "ResultDescription"
+          },
+          {
+            "type": "string",
+            "name": "DurationMs"
+          },
+          {
+            "type": "string",
+            "name": "Identity"
+          },
+          {
+            "type": "string",
+            "name": "Location"
+          },
+          {
+            "type": "string",
+            "name": "AdditionalDetails"
+          },
+          {
+            "type": "string",
+            "name": "C_Id"
+          },
+          {
+            "type": "string",
+            "name": "InitiatedBy"
+          },
+          {
+            "type": "string",
+            "name": "LoggedByService"
+          },
+          {
+            "type": "string",
+            "name": "Result"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project C__table, C_TenantId, SourceSystem, CallerIpAddress, CategoryValue, CorrelationId, Authorization, Authorization_d, Claims, Claims_d, Level, OperationNameValue, Properties, Properties_d, Caller, EventDataId, EventSubmissionTimestamp__UTC_, HTTPRequest, OperationId, ResourceGroup, ResourceProviderValue, ActivityStatusValue, ActivitySubstatusValue, Hierarchy, TimeGenerated__UTC_, SubscriptionId, OperationName, ActivityStatus, ActivitySubstatus, Category, ResourceId, ResourceProvider, Resource, C_Type, C__ResourceId, OperationVersion, ResultType, ResultSignature, ResultDescription, DurationMs, Identity, Location, AdditionalDetails, C_Id, InitiatedBy, LoggedByService, Result, TimeGenerated",
+        "outputStream": "Custom-azureActivity_adele_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-azureActivity_adele"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

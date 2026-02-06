@@ -1,0 +1,169 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-model_evasion_detection_CL_alerts": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "SourceSystem"
+          },
+          {
+            "type": "string",
+            "name": "MG"
+          },
+          {
+            "type": "string",
+            "name": "ManagementGroupName"
+          },
+          {
+            "type": "string",
+            "name": "Computer"
+          },
+          {
+            "type": "string",
+            "name": "RawData"
+          },
+          {
+            "type": "string",
+            "name": "response"
+          },
+          {
+            "type": "string",
+            "name": "logging_time"
+          },
+          {
+            "type": "string",
+            "name": "input_transformed"
+          },
+          {
+            "type": "string",
+            "name": "attack_name"
+          },
+          {
+            "type": "string",
+            "name": "attack_id"
+          },
+          {
+            "type": "string",
+            "name": "label"
+          },
+          {
+            "type": "string",
+            "name": "state"
+          },
+          {
+            "type": "string",
+            "name": "input_repr"
+          },
+          {
+            "type": "string",
+            "name": "output"
+          },
+          {
+            "type": "string",
+            "name": "account"
+          },
+          {
+            "type": "string",
+            "name": "host"
+          },
+          {
+            "type": "string",
+            "name": "client_ip"
+          },
+          {
+            "type": "string",
+            "name": "client_id__id"
+          },
+          {
+            "type": "string",
+            "name": "client_id_AadTenantId"
+          },
+          {
+            "type": "string",
+            "name": "client_id_AadUserId"
+          },
+          {
+            "type": "string",
+            "name": "client_didisplayName"
+          },
+          {
+            "type": "string",
+            "name": "client_id_Type"
+          },
+          {
+            "type": "string",
+            "name": "timestamp"
+          },
+          {
+            "type": "string",
+            "name": "client_id"
+          },
+          {
+            "type": "string",
+            "name": "model_input"
+          },
+          {
+            "type": "string",
+            "name": "model_output"
+          },
+          {
+            "type": "string",
+            "name": "model_output_label"
+          },
+          {
+            "type": "string",
+            "name": "model_id"
+          },
+          {
+            "type": "string",
+            "name": "model_evasioncore"
+          },
+          {
+            "type": "string",
+            "name": "C_Type"
+          },
+          {
+            "type": "string",
+            "name": "C__ResourceId"
+          },
+          {
+            "type": "string",
+            "name": "AccountCustomEntity"
+          },
+          {
+            "type": "string",
+            "name": "HostCustomEntity"
+          },
+          {
+            "type": "string",
+            "name": "IPCustomEntity"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project SourceSystem, MG, ManagementGroupName, Computer, RawData, response, logging_time, input_transformed, attack_name, attack_id, label, state, input_repr, output, account, host, client_ip, client_id__id, client_id_AadTenantId, client_id_AadUserId, client_didisplayName, client_id_Type, timestamp, client_id, model_input, model_output, model_output_label, model_id, model_evasioncore, C_Type, C__ResourceId, AccountCustomEntity, HostCustomEntity, IPCustomEntity, TimeGenerated",
+        "outputStream": "Custom-model_evasion_detection_CL_alerts_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-model_evasion_detection_CL_alerts"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

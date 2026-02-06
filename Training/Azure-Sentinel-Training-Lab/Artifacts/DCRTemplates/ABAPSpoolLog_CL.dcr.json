@@ -1,0 +1,177 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-ABAPSpoolLog": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "ClientID"
+          },
+          {
+            "type": "string",
+            "name": "SpoolRequestNumber"
+          },
+          {
+            "type": "string",
+            "name": "SpoolRequestName"
+          },
+          {
+            "type": "string",
+            "name": "SpoolRequestSuffix1"
+          },
+          {
+            "type": "string",
+            "name": "SpoolRequestSuffix2"
+          },
+          {
+            "type": "string",
+            "name": "User"
+          },
+          {
+            "type": "string",
+            "name": "ExternalMode"
+          },
+          {
+            "type": "string",
+            "name": "TemseReadProtectionRule"
+          },
+          {
+            "type": "string",
+            "name": "TemseNumDeleteProtectionRule"
+          },
+          {
+            "type": "string",
+            "name": "TemseNumAddProtectionRule"
+          },
+          {
+            "type": "string",
+            "name": "TemseNumChangeProtectionRule"
+          },
+          {
+            "type": "string",
+            "name": "PrintImmediately"
+          },
+          {
+            "type": "string",
+            "name": "DeleteSpoolRequestAuto"
+          },
+          {
+            "type": "string",
+            "name": "AutoRereoute"
+          },
+          {
+            "type": "string",
+            "name": "OutputDevice"
+          },
+          {
+            "type": "string",
+            "name": "NumofCopies"
+          },
+          {
+            "type": "string",
+            "name": "Priority"
+          },
+          {
+            "type": "string",
+            "name": "FormatType"
+          },
+          {
+            "type": "string",
+            "name": "TemSeGeneralcounter"
+          },
+          {
+            "type": "string",
+            "name": "SpoolErrorStatus"
+          },
+          {
+            "type": "string",
+            "name": "TemSeObjectName"
+          },
+          {
+            "type": "string",
+            "name": "TemSeObjectPart"
+          },
+          {
+            "type": "string",
+            "name": "SpoolRequestTitle"
+          },
+          {
+            "type": "string",
+            "name": "DelFlag"
+          },
+          {
+            "type": "string",
+            "name": "PrintSAPCoverPage"
+          },
+          {
+            "type": "string",
+            "name": "PrintOSCoverPage"
+          },
+          {
+            "type": "string",
+            "name": "RecipientofSpoolRequest"
+          },
+          {
+            "type": "string",
+            "name": "ArchiveType"
+          },
+          {
+            "type": "string",
+            "name": "ArchiveStatus"
+          },
+          {
+            "type": "string",
+            "name": "TelecommunicationsPartnerE"
+          },
+          {
+            "type": "string",
+            "name": "DocumentType"
+          },
+          {
+            "type": "string",
+            "name": "DeletedAt__Jerusalem_"
+          },
+          {
+            "type": "string",
+            "name": "SystemID"
+          },
+          {
+            "type": "string",
+            "name": "SystemNumber"
+          },
+          {
+            "type": "string",
+            "name": "Instance"
+          },
+          {
+            "type": "string",
+            "name": "Host"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project ClientID, SpoolRequestNumber, SpoolRequestName, SpoolRequestSuffix1, SpoolRequestSuffix2, User, ExternalMode, TemseReadProtectionRule, TemseNumDeleteProtectionRule, TemseNumAddProtectionRule, TemseNumChangeProtectionRule, PrintImmediately, DeleteSpoolRequestAuto, AutoRereoute, OutputDevice, NumofCopies, Priority, FormatType, TemSeGeneralcounter, SpoolErrorStatus, TemSeObjectName, TemSeObjectPart, SpoolRequestTitle, DelFlag, PrintSAPCoverPage, PrintOSCoverPage, RecipientofSpoolRequest, ArchiveType, ArchiveStatus, TelecommunicationsPartnerE, DocumentType, DeletedAt__Jerusalem_, SystemID, SystemNumber, Instance, Host, TimeGenerated",
+        "outputStream": "Custom-ABAPSpoolLog_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-ABAPSpoolLog"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

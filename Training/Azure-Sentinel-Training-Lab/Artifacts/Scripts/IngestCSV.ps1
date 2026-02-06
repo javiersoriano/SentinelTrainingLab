@@ -1079,6 +1079,7 @@ if ($Ingest) {
 
 foreach ($csv in $customCsvFiles) {
     $tableName = [System.IO.Path]::GetFileNameWithoutExtension($csv.Name)
+    $tableName = [regex]::Replace($tableName, "[^A-Za-z0-9_]", "_")
     if (-not $tableName.EndsWith("_CL")) {
         $tableName = "${tableName}_CL"
     }

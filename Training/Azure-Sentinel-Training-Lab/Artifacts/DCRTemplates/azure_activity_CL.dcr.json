@@ -1,0 +1,113 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-azure_activity": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "OperationName"
+          },
+          {
+            "type": "string",
+            "name": "Level"
+          },
+          {
+            "type": "string",
+            "name": "ActivityStatus"
+          },
+          {
+            "type": "string",
+            "name": "ActivitySubstatus"
+          },
+          {
+            "type": "string",
+            "name": "ResourceGroup"
+          },
+          {
+            "type": "string",
+            "name": "SubscriptionId"
+          },
+          {
+            "type": "string",
+            "name": "CorrelationId"
+          },
+          {
+            "type": "string",
+            "name": "Caller"
+          },
+          {
+            "type": "string",
+            "name": "CallerIpAddress"
+          },
+          {
+            "type": "string",
+            "name": "Category"
+          },
+          {
+            "type": "string",
+            "name": "HTTPRequest"
+          },
+          {
+            "type": "string",
+            "name": "Properties"
+          },
+          {
+            "type": "string",
+            "name": "EventSubmissionTimestamp__UTC_"
+          },
+          {
+            "type": "string",
+            "name": "Authorization"
+          },
+          {
+            "type": "string",
+            "name": "ResourceId"
+          },
+          {
+            "type": "string",
+            "name": "OperationId"
+          },
+          {
+            "type": "string",
+            "name": "ResourceProvider"
+          },
+          {
+            "type": "string",
+            "name": "Resource"
+          },
+          {
+            "type": "string",
+            "name": "EventDataId"
+          },
+          {
+            "type": "string",
+            "name": "TimeGenerated__UTC_"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project OperationName, Level, ActivityStatus, ActivitySubstatus, ResourceGroup, SubscriptionId, CorrelationId, Caller, CallerIpAddress, Category, HTTPRequest, Properties, EventSubmissionTimestamp__UTC_, Authorization, ResourceId, OperationId, ResourceProvider, Resource, EventDataId, TimeGenerated__UTC_, TimeGenerated",
+        "outputStream": "Custom-azure_activity_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-azure_activity"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

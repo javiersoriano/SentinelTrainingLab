@@ -1,0 +1,121 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-ABAPAuditLog": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "Instance"
+          },
+          {
+            "type": "string",
+            "name": "AlertSeverity"
+          },
+          {
+            "type": "string",
+            "name": "TransactionCode"
+          },
+          {
+            "type": "string",
+            "name": "ABAPProgramName"
+          },
+          {
+            "type": "string",
+            "name": "AuditClassID_d"
+          },
+          {
+            "type": "string",
+            "name": "AlertSeverityText"
+          },
+          {
+            "type": "string",
+            "name": "TerminalIPv6"
+          },
+          {
+            "type": "string",
+            "name": "Variable1"
+          },
+          {
+            "type": "string",
+            "name": "Variable2"
+          },
+          {
+            "type": "string",
+            "name": "Variable3"
+          },
+          {
+            "type": "string",
+            "name": "SAPProcesType"
+          },
+          {
+            "type": "string",
+            "name": "SAPWPName"
+          },
+          {
+            "type": "string",
+            "name": "SystemNumber"
+          },
+          {
+            "type": "string",
+            "name": "Host"
+          },
+          {
+            "type": "string",
+            "name": "AlertSeverity_d"
+          },
+          {
+            "type": "string",
+            "name": "MessageClass"
+          },
+          {
+            "type": "string",
+            "name": "ClientID"
+          },
+          {
+            "type": "string",
+            "name": "MonitorShortName"
+          },
+          {
+            "type": "string",
+            "name": "SystemID"
+          },
+          {
+            "type": "string",
+            "name": "MonitorContextName"
+          },
+          {
+            "type": "string",
+            "name": "MessageID"
+          },
+          {
+            "type": "string",
+            "name": "MessageText"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project Instance, AlertSeverity, TransactionCode, ABAPProgramName, AuditClassID_d, AlertSeverityText, TerminalIPv6, Variable1, Variable2, Variable3, SAPProcesType, SAPWPName, SystemNumber, Host, AlertSeverity_d, MessageClass, ClientID, MonitorShortName, SystemID, MonitorContextName, MessageID, MessageText, TimeGenerated",
+        "outputStream": "Custom-ABAPAuditLog_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-ABAPAuditLog"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

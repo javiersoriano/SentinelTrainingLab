@@ -1,0 +1,189 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-AuditLogs_Hunting": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "OperationName"
+          },
+          {
+            "type": "string",
+            "name": "InitiatingUserOrApp"
+          },
+          {
+            "type": "string",
+            "name": "InitiatingIpAddress"
+          },
+          {
+            "type": "string",
+            "name": "UserAgent"
+          },
+          {
+            "type": "string",
+            "name": "targetDisplayName"
+          },
+          {
+            "type": "string",
+            "name": "targetId"
+          },
+          {
+            "type": "string",
+            "name": "targetType"
+          },
+          {
+            "type": "string",
+            "name": "keyDisplayName"
+          },
+          {
+            "type": "string",
+            "name": "keyType"
+          },
+          {
+            "type": "string",
+            "name": "keyUsage"
+          },
+          {
+            "type": "string",
+            "name": "keyIdentifier"
+          },
+          {
+            "type": "string",
+            "name": "CorrelationId"
+          },
+          {
+            "type": "string",
+            "name": "SourceSystem"
+          },
+          {
+            "type": "string",
+            "name": "OperationVersion"
+          },
+          {
+            "type": "string",
+            "name": "Category"
+          },
+          {
+            "type": "string",
+            "name": "ResultType"
+          },
+          {
+            "type": "string",
+            "name": "ResultSignature"
+          },
+          {
+            "type": "string",
+            "name": "ResultDescription"
+          },
+          {
+            "type": "string",
+            "name": "DurationMs"
+          },
+          {
+            "type": "string",
+            "name": "Resource"
+          },
+          {
+            "type": "string",
+            "name": "ResourceGroup"
+          },
+          {
+            "type": "string",
+            "name": "ResourceProvider"
+          },
+          {
+            "type": "string",
+            "name": "Identity"
+          },
+          {
+            "type": "string",
+            "name": "Level"
+          },
+          {
+            "type": "string",
+            "name": "Location"
+          },
+          {
+            "type": "string",
+            "name": "AdditionalDetails"
+          },
+          {
+            "type": "string",
+            "name": "C_Id"
+          },
+          {
+            "type": "string",
+            "name": "InitiatedBy"
+          },
+          {
+            "type": "string",
+            "name": "LoggedByService"
+          },
+          {
+            "type": "string",
+            "name": "Result"
+          },
+          {
+            "type": "string",
+            "name": "ResultReason"
+          },
+          {
+            "type": "string",
+            "name": "TargetResources"
+          },
+          {
+            "type": "string",
+            "name": "ActivityDisplayName"
+          },
+          {
+            "type": "string",
+            "name": "AADOperationType"
+          },
+          {
+            "type": "string",
+            "name": "C_Type"
+          },
+          {
+            "type": "string",
+            "name": "target"
+          },
+          {
+            "type": "string",
+            "name": "keyEvents"
+          },
+          {
+            "type": "string",
+            "name": "AccountCustomEntity"
+          },
+          {
+            "type": "string",
+            "name": "IPCustomEntity"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project OperationName, InitiatingUserOrApp, InitiatingIpAddress, UserAgent, targetDisplayName, targetId, targetType, keyDisplayName, keyType, keyUsage, keyIdentifier, CorrelationId, SourceSystem, OperationVersion, Category, ResultType, ResultSignature, ResultDescription, DurationMs, Resource, ResourceGroup, ResourceProvider, Identity, Level, Location, AdditionalDetails, C_Id, InitiatedBy, LoggedByService, Result, ResultReason, TargetResources, ActivityDisplayName, AADOperationType, C_Type, target, keyEvents, AccountCustomEntity, IPCustomEntity, TimeGenerated",
+        "outputStream": "Custom-AuditLogs_Hunting_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-AuditLogs_Hunting"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

@@ -1,0 +1,277 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-disable_accounts": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "SourceSystem"
+          },
+          {
+            "type": "string",
+            "name": "OperationName"
+          },
+          {
+            "type": "string",
+            "name": "OperationVersion"
+          },
+          {
+            "type": "string",
+            "name": "Category"
+          },
+          {
+            "type": "string",
+            "name": "ResultType"
+          },
+          {
+            "type": "string",
+            "name": "ResultSignature"
+          },
+          {
+            "type": "string",
+            "name": "ResultDescription"
+          },
+          {
+            "type": "string",
+            "name": "DurationMs"
+          },
+          {
+            "type": "string",
+            "name": "CorrelationId"
+          },
+          {
+            "type": "string",
+            "name": "Resource"
+          },
+          {
+            "type": "string",
+            "name": "ResourceGroup"
+          },
+          {
+            "type": "string",
+            "name": "ResourceProvider"
+          },
+          {
+            "type": "string",
+            "name": "Identity"
+          },
+          {
+            "type": "string",
+            "name": "Level"
+          },
+          {
+            "type": "string",
+            "name": "Location"
+          },
+          {
+            "type": "string",
+            "name": "AlternateSignInName"
+          },
+          {
+            "type": "string",
+            "name": "AppDisplayName"
+          },
+          {
+            "type": "string",
+            "name": "AppId"
+          },
+          {
+            "type": "string",
+            "name": "AuthenticationDetails"
+          },
+          {
+            "type": "string",
+            "name": "AuthenticationMethodsUsed"
+          },
+          {
+            "type": "string",
+            "name": "AuthenticationProcessingDetails"
+          },
+          {
+            "type": "string",
+            "name": "AuthenticationRequirement"
+          },
+          {
+            "type": "string",
+            "name": "AuthenticationRequirementPolicies"
+          },
+          {
+            "type": "string",
+            "name": "ClientAppUsed"
+          },
+          {
+            "type": "string",
+            "name": "ConditionalAccessPolicies"
+          },
+          {
+            "type": "string",
+            "name": "ConditionalAccessStatus"
+          },
+          {
+            "type": "string",
+            "name": "DeviceDetail"
+          },
+          {
+            "type": "string",
+            "name": "IsInteractive"
+          },
+          {
+            "type": "string",
+            "name": "C_Id"
+          },
+          {
+            "type": "string",
+            "name": "IPAddress"
+          },
+          {
+            "type": "string",
+            "name": "IsRisky"
+          },
+          {
+            "type": "string",
+            "name": "LocationDetails"
+          },
+          {
+            "type": "string",
+            "name": "MfaDetail"
+          },
+          {
+            "type": "string",
+            "name": "NetworkLocationDetails"
+          },
+          {
+            "type": "string",
+            "name": "OriginalRequestId"
+          },
+          {
+            "type": "string",
+            "name": "ProcessingTimeInMilliseconds"
+          },
+          {
+            "type": "string",
+            "name": "RiskDetail"
+          },
+          {
+            "type": "string",
+            "name": "RiskEventTypes"
+          },
+          {
+            "type": "string",
+            "name": "RiskEventTypes_V2"
+          },
+          {
+            "type": "string",
+            "name": "RiskLevelAggregated"
+          },
+          {
+            "type": "string",
+            "name": "RiskLevelDuringSignIn"
+          },
+          {
+            "type": "string",
+            "name": "RiskState"
+          },
+          {
+            "type": "string",
+            "name": "ResourceDisplayName"
+          },
+          {
+            "type": "string",
+            "name": "ResourceIdentity"
+          },
+          {
+            "type": "string",
+            "name": "ServicePrincipalId"
+          },
+          {
+            "type": "string",
+            "name": "ServicePrincipalName"
+          },
+          {
+            "type": "string",
+            "name": "Status"
+          },
+          {
+            "type": "string",
+            "name": "TokenIssuerName"
+          },
+          {
+            "type": "string",
+            "name": "TokenIssuerType"
+          },
+          {
+            "type": "string",
+            "name": "UserAgent"
+          },
+          {
+            "type": "string",
+            "name": "UserDisplayName"
+          },
+          {
+            "type": "string",
+            "name": "UserId"
+          },
+          {
+            "type": "string",
+            "name": "UserPrincipalName"
+          },
+          {
+            "type": "string",
+            "name": "AADTenantId"
+          },
+          {
+            "type": "string",
+            "name": "UserType"
+          },
+          {
+            "type": "string",
+            "name": "FlaggedForReview"
+          },
+          {
+            "type": "string",
+            "name": "SignInIdentifier"
+          },
+          {
+            "type": "string",
+            "name": "SignInIdentifierType"
+          },
+          {
+            "type": "string",
+            "name": "ResourceTenantId"
+          },
+          {
+            "type": "string",
+            "name": "HomeTenantId"
+          },
+          {
+            "type": "string",
+            "name": "C_Type"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project SourceSystem, OperationName, OperationVersion, Category, ResultType, ResultSignature, ResultDescription, DurationMs, CorrelationId, Resource, ResourceGroup, ResourceProvider, Identity, Level, Location, AlternateSignInName, AppDisplayName, AppId, AuthenticationDetails, AuthenticationMethodsUsed, AuthenticationProcessingDetails, AuthenticationRequirement, AuthenticationRequirementPolicies, ClientAppUsed, ConditionalAccessPolicies, ConditionalAccessStatus, DeviceDetail, IsInteractive, C_Id, IPAddress, IsRisky, LocationDetails, MfaDetail, NetworkLocationDetails, OriginalRequestId, ProcessingTimeInMilliseconds, RiskDetail, RiskEventTypes, RiskEventTypes_V2, RiskLevelAggregated, RiskLevelDuringSignIn, RiskState, ResourceDisplayName, ResourceIdentity, ServicePrincipalId, ServicePrincipalName, Status, TokenIssuerName, TokenIssuerType, UserAgent, UserDisplayName, UserId, UserPrincipalName, AADTenantId, UserType, FlaggedForReview, SignInIdentifier, SignInIdentifierType, ResourceTenantId, HomeTenantId, C_Type, TimeGenerated",
+        "outputStream": "Custom-disable_accounts_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-disable_accounts"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}

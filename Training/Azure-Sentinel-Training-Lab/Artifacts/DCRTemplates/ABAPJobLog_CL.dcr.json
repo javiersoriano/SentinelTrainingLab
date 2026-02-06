@@ -1,0 +1,121 @@
+{
+  "kind": "Direct",
+  "properties": {
+    "streamDeclarations": {
+      "Custom-ABAPJobLog": {
+        "columns": [
+          {
+            "type": "string",
+            "name": "Instance"
+          },
+          {
+            "type": "string",
+            "name": "UserReleaseInstance"
+          },
+          {
+            "type": "string",
+            "name": "JobName"
+          },
+          {
+            "type": "string",
+            "name": "JobCount"
+          },
+          {
+            "type": "string",
+            "name": "MessageText"
+          },
+          {
+            "type": "string",
+            "name": "SchedulingDateTime__Jerusalem_"
+          },
+          {
+            "type": "string",
+            "name": "StartDateTime__Jerusalem_"
+          },
+          {
+            "type": "string",
+            "name": "SchedulingUser"
+          },
+          {
+            "type": "string",
+            "name": "LastChangeByUser"
+          },
+          {
+            "type": "string",
+            "name": "ReleaseUser"
+          },
+          {
+            "type": "string",
+            "name": "ClientID"
+          },
+          {
+            "type": "string",
+            "name": "WorkProcessNumber"
+          },
+          {
+            "type": "string",
+            "name": "WorkProcessID"
+          },
+          {
+            "type": "string",
+            "name": "BgdProcessingEvent"
+          },
+          {
+            "type": "string",
+            "name": "JobClassification"
+          },
+          {
+            "type": "string",
+            "name": "JobPriority"
+          },
+          {
+            "type": "string",
+            "name": "MessageClass"
+          },
+          {
+            "type": "string",
+            "name": "MessageNumber"
+          },
+          {
+            "type": "string",
+            "name": "MessageType"
+          },
+          {
+            "type": "string",
+            "name": "SystemID"
+          },
+          {
+            "type": "string",
+            "name": "SystemNumber"
+          },
+          {
+            "type": "string",
+            "name": "Host"
+          }
+        ]
+      }
+    },
+    "dataFlows": [
+      {
+        "transformKql": "source | extend TimeGenerated = now() | project Instance, UserReleaseInstance, JobName, JobCount, MessageText, SchedulingDateTime__Jerusalem_, StartDateTime__Jerusalem_, SchedulingUser, LastChangeByUser, ReleaseUser, ClientID, WorkProcessNumber, WorkProcessID, BgdProcessingEvent, JobClassification, JobPriority, MessageClass, MessageNumber, MessageType, SystemID, SystemNumber, Host, TimeGenerated",
+        "outputStream": "Custom-ABAPJobLog_CL",
+        "destinations": [
+          "la"
+        ],
+        "streams": [
+          "Custom-ABAPJobLog"
+        ]
+      }
+    ],
+    "destinations": {
+      "logAnalytics": [
+        {
+          "workspaceResourceId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.OperationalInsights/workspaces/kikoki",
+          "name": "la"
+        }
+      ]
+    },
+    "dataCollectionEndpointId": "/subscriptions/4cc2b540-c855-4eef-b689-a669d97dd70d/resourceGroups/kikoki/providers/Microsoft.Insights/dataCollectionEndpoints/sentinel-training-dce"
+  },
+  "location": "eastus"
+}
