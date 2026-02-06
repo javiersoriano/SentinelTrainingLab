@@ -90,7 +90,7 @@
                             }
                         ]
                     }
-                ],
+                ]
             }
         },
         {
@@ -160,7 +160,7 @@
                     "SuspiciousCommand": "commands",
                     "AWSUser": "UserIdentityUserName",
                     "AWSUserIp": "SourceIpAddress"
-                },
+                }
             }
         },
         {
@@ -233,7 +233,7 @@
                             }
                         ]
                     }
-                ],
+                ]
             }
         },
         {
@@ -313,7 +313,7 @@
                             }
                         ]
                     }
-                ],
+                ]
             }
         }
     ]
