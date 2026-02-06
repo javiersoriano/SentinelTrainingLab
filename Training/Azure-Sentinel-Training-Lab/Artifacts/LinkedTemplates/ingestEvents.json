@@ -76,7 +76,7 @@
         {
             "type": "Microsoft.Automation/automationAccounts/jobSchedules",
             "apiVersion": "2019-06-01",
-            "name": "[guid(variables('automationAccountName'), variables('runbookName'), variables('scheduleName'))]",
+            "name": "[concat(variables('automationAccountName'), '/', guid(variables('automationAccountName'), variables('runbookName'), variables('scheduleName')))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks', variables('automationAccountName'), variables('runbookName'))]",
                 "[resourceId('Microsoft.Automation/automationAccounts/schedules', variables('automationAccountName'), variables('scheduleName'))]",
