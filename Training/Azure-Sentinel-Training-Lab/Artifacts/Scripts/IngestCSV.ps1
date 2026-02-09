@@ -305,7 +305,7 @@ function Resolve-WorkspaceResourceId {
         $id = az monitor log-analytics workspace show -g $ResourceGroupName -n $WorkspaceName --subscription $SubscriptionId --query id -o tsv
     } else {
         $apiVersion = "2022-10-01"
-        $uri = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.OperationalInsights/workspaces/$WorkspaceName?api-version=$apiVersion"
+        $uri = "https://management.azure.com/subscriptions/${SubscriptionId}/resourceGroups/${ResourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/${WorkspaceName}?api-version=${apiVersion}"
         $workspace = Invoke-ArmRest -Method "GET" -Uri $uri
         $id = $workspace.id
     }
