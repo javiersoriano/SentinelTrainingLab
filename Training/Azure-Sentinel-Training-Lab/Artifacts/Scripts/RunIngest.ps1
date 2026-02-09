@@ -30,6 +30,20 @@ function Get-OptionalAutomationVariableValue {
     }
 }
 
+function Normalize-RunbookStringValue {
+    param(
+        [AllowNull()]
+        [string]$Value
+    )
+
+    if ($null -eq $Value) {
+        return $null
+    }
+
+    $trimmed = $Value.Trim()
+    return $trimmed.Trim('"')
+}
+
 if (-not $SubscriptionId) {
     $SubscriptionId = Get-OptionalAutomationVariableValue -Name 'SentinelTrainingSubscriptionId'
 }
@@ -49,6 +63,11 @@ if (-not $SubscriptionId) {
         $SubscriptionId = $context.Subscription.Id
     }
 }
+
+$SubscriptionId = Normalize-RunbookStringValue -Value $SubscriptionId
+$ResourceGroupName = Normalize-RunbookStringValue -Value $ResourceGroupName
+$Location = Normalize-RunbookStringValue -Value $Location
+$WorkspaceName = Normalize-RunbookStringValue -Value $WorkspaceName
 
 if (-not $SubscriptionId -or -not $ResourceGroupName -or -not $Location -or -not $WorkspaceName) {
     throw "Missing required runbook parameters. Provide SubscriptionId/ResourceGroupName/Location/WorkspaceName via jobSchedule parameters or set Automation variables: SentinelTrainingSubscriptionId, SentinelTrainingResourceGroupName, SentinelTrainingLocation, SentinelTrainingWorkspaceName."
@@ -76,14 +95,17 @@ if (-not (Test-Path -Path $templatesPath)) {
     New-Item -ItemType Directory -Path $templatesPath | Out-Null
 }
 
-& $scriptPath \
-    -SubscriptionId $SubscriptionId \
-    -ResourceGroupName $ResourceGroupName \
-    -Location $Location \
-    -WorkspaceName $WorkspaceName \
-    -TelemetryPath $customTelemetryPath \
-    -BuiltInTelemetryPath $builtInTelemetryPath \
-    -TemplatesOutputPath $templatesPath \
-    -DeployBuiltInDcr \
-    -Deploy \
-    -Ingest
+$ingestArgs = @{
+    SubscriptionId = $SubscriptionId
+    ResourceGroupName = $ResourceGroupName
+    Location = $Location
+    WorkspaceName = $WorkspaceName
+    TelemetryPath = $customTelemetryPath
+    BuiltInTelemetryPath = $builtInTelemetryPath
+    TemplatesOutputPath = $templatesPath
+    DeployBuiltInDcr = $true
+    Deploy = $true
+    Ingest = $true
+}
+
+& $scriptPath @ingestArgs
