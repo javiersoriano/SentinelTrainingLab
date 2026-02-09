@@ -46,8 +46,7 @@
                     "DefenseEvasion"
                 ],
                 "techniques": [
-                    "T1562",
-                    "T1562.001"
+                    "T1562"
                 ],
                 "incidentConfiguration": {
                     "createIncident": true,
@@ -91,8 +90,7 @@
                             }
                         ]
                     }
-                ],
-                "templateVersion": "1.0.0"
+                ]
             }
         },
         {
@@ -118,9 +116,8 @@
                 ],
                 "techniques": [
                     "T1595",
-                    "T1592.004",
-                    "T1589.002",
-                    "T1589.003",
+                    "T1592",
+                    "T1589",
                     "T1590",
                     "T1591",
                     "T1596"
@@ -163,8 +160,7 @@
                     "SuspiciousCommand": "commands",
                     "AWSUser": "UserIdentityUserName",
                     "AWSUserIp": "SourceIpAddress"
-                },
-                "templateVersion": "1.0.1"
+                }
             }
         },
         {
@@ -237,8 +233,7 @@
                             }
                         ]
                     }
-                ],
-                "templateVersion": "1.0.1"
+                ]
             }
         },
         {
@@ -318,8 +313,7 @@
                             }
                         ]
                     }
-                ],
-                "templateVersion": "1.0.1"
+                ]
             }
         }
     ]
