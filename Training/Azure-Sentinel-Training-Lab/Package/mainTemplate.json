@@ -315,7 +315,7 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
-            "name": "[guid(resourceGroup().id, variables('automationAccountName'), 'monitoring-contrib')]",
+            "name": "[guid(resourceGroup().id, variables('automationAccountName'), deployment().name, 'monitoring-contrib')]",
             "condition": "[parameters('enableIngestion')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'ingestEvents')]"
@@ -329,7 +329,7 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
-            "name": "[guid(resourceGroup().id, variables('automationAccountName'), 'la-contrib')]",
+            "name": "[guid(resourceGroup().id, variables('automationAccountName'), deployment().name, 'la-contrib')]",
             "condition": "[parameters('enableIngestion')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'ingestEvents')]"
@@ -343,7 +343,7 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
-            "name": "[guid(resourceGroup().id, variables('automationAccountName'), 'metrics-publisher')]",
+            "name": "[guid(resourceGroup().id, variables('automationAccountName'), deployment().name, 'metrics-publisher')]",
             "condition": "[parameters('enableIngestion')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'ingestEvents')]"
