@@ -40,16 +40,16 @@
         },
         "scheduleStartTime":{
             "type": "string",
-            "defaultValue": "[dateTimeAdd(utcNow('yyyy-MM-ddTHH:mm:ssZ'), 'PT30M')]",
+            "defaultValue": "[dateTimeAdd(utcNow('yyyy-MM-ddTHH:mm:ssZ'), 'PT15M')]",
             "metadata": {
                 "description": "UTC start time for the one-time ingestion schedule"
             }
         },
         "detectionRulesScheduleStartTime": {
             "type": "string",
-            "defaultValue": "[dateTimeAdd(utcNow('yyyy-MM-ddTHH:mm:ssZ'), 'PT10M')]",
+            "defaultValue": "[dateTimeAdd(utcNow('yyyy-MM-ddTHH:mm:ssZ'), 'PT30M')]",
             "metadata": {
-                "description": "UTC start time for the detection-rules runbook (runs before ingestion)"
+                "description": "UTC start time for the detection-rules runbook (runs after ingestion)"
             }
         },
         "detectionRulesIdentityResourceId": {
