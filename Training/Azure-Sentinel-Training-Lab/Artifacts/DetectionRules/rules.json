@@ -122,5 +122,65 @@
         "organizationalScope": null,
         "responseActions": []
     }
+},
+{
+    "displayName": "PoCaaS  Stage 6 Large Data Exfiltration (Palo Alto)",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "CommonSecurityLog\n| where TimeGenerated > ago(1h)\n| where DeviceVendor == \"Palo Alto Networks\"\n| where DeviceEventClassID == \"TRAFFIC\"\n| where Activity == \"end\"\n| where isnotempty(DestinationIP)\n| where ipv4_is_private(DestinationIP) == false\n| where SentBytes > 10000000\n| project\n    TimeGenerated,\n    SourceIP,\n    DestinationIP,\n    DestinationPort,\n    SentBytes,\n    ReceivedBytes,\n    ApplicationProtocol,\n    SourceUserName,\n    SourceHostName,\n    DeviceAction\n| extend\n    SentMB = round(SentBytes / 1048576.0, 2),\n    AccountUpn = SourceUserName,\n    DeviceName = SourceHostName,\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), SourceIP, DestinationIP, tostring(SentBytes))))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 6 - Large data exfiltration to external IP",
+            "description": "Palo Alto firewall detected a session sending more than 10 MB to an external IP. This indicates potential data exfiltration. Stage 6 of the PoCaaS attack chain (T1041).",
+            "severity": "high",
+            "category": "Exfiltration",
+            "mitreTechniques": ["T1041"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedDeviceAsset",
+                    "identifier": "deviceName"
+                },
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+},
+{
+    "displayName": "PoCaaS – Stage 7 – AWS IAM Escalation and Suspicious Cloud Activity",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "let suspicious_events = dynamic([\n    \"ConsoleLogin\",\n    \"CreateUser\",\n    \"AttachUserPolicy\",\n    \"AuthorizeSecurityGroupIngress\",\n    \"RunInstances\",\n    \"GetObject\",\n    \"StopLogging\"\n]);\nAWSCloudTrail\n| where TimeGenerated > ago(2h)\n| where EventName in (suspicious_events)\n| summarize\n    EventSequence = make_set(EventName),\n    EventCount = count(),\n    FirstEvent = min(TimeGenerated),\n    LastEvent = max(TimeGenerated),\n    SourceIPs = make_set(SourceIpAddress),\n    UserArn = take_any(UserIdentityArn)\n    by UserIdentityUserName\n| where EventCount >= 3\n| where set_has_element(EventSequence, \"CreateUser\") or set_has_element(EventSequence, \"AttachUserPolicy\") or set_has_element(EventSequence, \"StopLogging\")\n| extend DurationMin = datetime_diff('minute', LastEvent, FirstEvent)\n| project\n    FirstEvent,\n    LastEvent,\n    DurationMin,\n    UserIdentityUserName,\n    EventSequence,\n    EventCount,\n    SourceIPs,\n    UserArn\n| extend\n    TimeGenerated = FirstEvent,\n    AccountUpn = strcat(UserIdentityUserName, \"@pkwork.onmicrosoft.com\"),\n    RemoteIP = tostring(SourceIPs[0]),\n    ReportId = tostring(hash_sha256(strcat(UserIdentityUserName, tostring(EventCount), tostring(FirstEvent))))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 7 - AWS IAM escalation and suspicious cloud activity",
+            "description": "An AWS IAM user performed multiple suspicious actions including account creation, policy attachment, or disabling CloudTrail. Stage 7 of the PoCaaS attack chain (T1078, T1098, T1496, T1562.008).",
+            "severity": "high",
+            "category": "Impact",
+            "mitreTechniques": ["T1078", "T1098", "T1496", "T1562.008"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
 }
 ]
