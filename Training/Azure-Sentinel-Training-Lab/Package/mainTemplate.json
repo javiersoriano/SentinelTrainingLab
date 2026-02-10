@@ -45,6 +45,20 @@
                 "description": "UTC start time for the one-time ingestion schedule"
             }
         },
+        "detectionRulesScheduleStartTime": {
+            "type": "string",
+            "defaultValue": "[dateTimeAdd(utcNow('yyyy-MM-ddTHH:mm:ssZ'), 'PT10M')]",
+            "metadata": {
+                "description": "UTC start time for the detection-rules runbook (runs before ingestion)"
+            }
+        },
+        "detectionRulesIdentityResourceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Full resource ID of a pre-created User-Assigned Managed Identity with Microsoft Graph CustomDetection.ReadWrite.All permission (leave empty to skip detection rules)"
+            }
+        },
         "enableIngestion": {
             "type": "bool",
             "defaultValue": true,
@@ -127,6 +141,30 @@
                     },
                     "location": {
                         "value": "[parameters('workspace-location')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "deployDetectionRules",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "condition": "[not(empty(parameters('detectionRulesIdentityResourceId')))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'workspaceCreation')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('_artifactsLocation'), concat('Artifacts/LinkedTemplates/deployDetectionRules.json?v=', parameters('artifactsVersion')))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "scheduleStartTime": {
+                        "value": "[parameters('detectionRulesScheduleStartTime')]"
+                    },
+                    "userAssignedIdentityResourceId": {
+                        "value": "[parameters('detectionRulesIdentityResourceId')]"
                     }
                 }
             }

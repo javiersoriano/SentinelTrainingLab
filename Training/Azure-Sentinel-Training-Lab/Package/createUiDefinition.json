@@ -48,6 +48,17 @@
             "required": true
           },
           "visible": true
+        },
+        {
+          "name": "detectionRulesIdentityResourceId",
+          "type": "Microsoft.Common.TextBox",
+          "label": "Detection Rules UAMI Resource ID (optional)",
+          "defaultValue": "",
+          "toolTip": "Full resource ID of the User-Assigned Managed Identity that has CustomDetection.ReadWrite.All (leave empty to skip detection rules).",
+          "constraints": {
+            "required": false
+          },
+          "visible": true
         }
       ],
       "steps": [
@@ -209,6 +220,7 @@
         "workspace-location": "[resourceGroup().location]",
         "location": "[location()]",
         "workspaceName": "[basics('workspace')]",
+        "detectionRulesIdentityResourceId": "[basics('detectionRulesIdentityResourceId')]",
         "workbook1-name": "[steps('workbooks').workbook1.workbook1-name]",
         "playbook1-PlaybookName": "[steps('playbooks').playbook1.playbook1-PlaybookName]"
       }
