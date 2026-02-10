@@ -1,0 +1,126 @@
+[
+  {
+    "displayName": "PoCaaS – Stage 2 – Malicious Payload Execution (CrowdStrike)",
+    "isEnabled": true,
+    "queryCondition": {
+      "queryText": "CrowdStrikeDetections\n| where TimeGenerated > ago(1h)\n| where Tactic == \"Execution\" or Technique has \"T1204\"\n| where SeverityName in (\"High\", \"Critical\")\n| project\n    TimeGenerated,\n    Name,\n    Description,\n    SeverityName,\n    Tactic,\n    Technique,\n    UserName,\n    SourceAccountUpn,\n    Filename,\n    Filepath,\n    Sha256,\n    Md5,\n    Cmdline,\n    Device\n| extend\n    AccountUpn = SourceAccountUpn,\n    DeviceName = tostring(Device.hostname),\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), Name, tostring(Device.hostname))))"
+    },
+    "schedule": {
+      "period": "1H"
+    },
+    "detectionAction": {
+      "alertTemplate": {
+        "title": "PoCaaS Stage 2 Malicious payload execution detected by CrowdStrike",
+        "description": "CrowdStrike detected a high or critical severity execution event on an endpoint. Stage 2 of the PoCaaS attack chain (T1204.002).",
+        "severity": "high",
+        "category": "Execution",
+        "mitreTechniques": ["T1204.002"],
+        "recommendedActions": null,
+        "impactedAssets": [
+          {
+            "@odata.type": "#microsoft.graph.security.impactedDeviceAsset",
+            "identifier": "deviceName"
+          },
+          {
+            "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+            "identifier": "accountUpn"
+          }
+        ]
+      },
+      "organizationalScope": null,
+      "responseActions": []
+    }
+  },
+  {
+    "displayName": "PoCaaS Stage 3 Credential Dumping Detected (CrowdStrike)",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "CrowdStrikeDetections\n| where TimeGenerated > ago(1h)\n| where Tactic == \"Credential Access\" or Technique has \"T1003\"\n| where SeverityName in (\"High\", \"Critical\")\n| project\n    TimeGenerated,\n    Name,\n    Description,\n    SeverityName,\n    Tactic,\n    Technique,\n    UserName,\n    SourceAccountUpn,\n    Filename,\n    Filepath,\n    Cmdline,\n    Objective,\n    Device\n| extend\n    AccountUpn = SourceAccountUpn,\n    DeviceName = tostring(Device.hostname),\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), Name, tostring(Device.hostname))))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 3 - Credential dumping detected by CrowdStrike",
+            "description": "CrowdStrike detected credential dumping activity on an endpoint. Stage 3 of the PoCaaS attack chain (T1003.001).",
+            "severity": "high",
+            "category": "CredentialAccess",
+            "mitreTechniques": ["T1003.001"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedDeviceAsset",
+                    "identifier": "deviceName"
+                },
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+  },
+{
+    "displayName": "PoCaaS Stage 3.5 Internal Port Scan Detected (Palo Alto)",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "CommonSecurityLog\n| where TimeGenerated > ago(1h)\n| where DeviceVendor == \"Palo Alto Networks\"\n| where DeviceEventClassID == \"TRAFFIC\"\n| where Activity in (\"drop\", \"deny\", \"end\")\n| where ApplicationProtocol == \"incomplete\"\n| summarize\n    DistinctPorts = dcount(DestinationPort),\n    DistinctHosts = dcount(DestinationIP),\n    SessionCount = count(),\n    FirstSeen = min(TimeGenerated),\n    LastSeen = max(TimeGenerated),\n    SourceHostName = take_any(SourceHostName)\n    by SourceIP, SourceUserName\n| where DistinctPorts > 20\n| extend\n    TimeGenerated = FirstSeen,\n    AccountUpn = SourceUserName,\n    DeviceName = SourceHostName,\n    ReportId = tostring(hash_sha256(strcat(SourceIP, SourceUserName, tostring(DistinctPorts))))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 3.5 - Internal port scan detected via Palo Alto",
+            "description": "A host scanned more than 20 distinct ports across internal hosts, indicating network reconnaissance. Stage 3.5 of the PoCaaS attack chain (T1046).",
+            "severity": "medium",
+            "category": "Discovery",
+            "mitreTechniques": ["T1046"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedDeviceAsset",
+                    "identifier": "deviceName"
+                },
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+ },
+ {
+    "displayName": "PoCaaS Stage 4 Suspicious Okta Login + Privilege Escalation",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "let login_events = OktaV2_CL\n| where TimeGenerated > ago(1h)\n| where EventOriginalType == \"user.session.start\"\n| where OriginalOutcomeResult == \"SUCCESS\"\n| where SrcGeoCountry != \"US\"\n| project LoginTime = TimeGenerated, ActorUsername, SrcIpAddr, SrcGeoCountry, SrcGeoCity, ActorSessionId;\nlet priv_events = OktaV2_CL\n| where TimeGenerated > ago(1h)\n| where EventOriginalType in (\"user.account.privilege.grant\", \"system.api_token.create\", \"user.session.impersonation.grant\")\n| where OriginalOutcomeResult == \"SUCCESS\"\n| project PrivTime = TimeGenerated, ActorUsername, EventOriginalType, EventMessage, SrcIpAddr;\nlogin_events\n| join kind=inner priv_events on ActorUsername, SrcIpAddr\n| where PrivTime between (LoginTime .. LoginTime + 15m)\n| project\n    LoginTime,\n    PrivTime,\n    ActorUsername,\n    SrcIpAddr,\n    SrcGeoCountry,\n    SrcGeoCity,\n    PrivilegeAction = EventOriginalType,\n    ActionMessage = EventMessage\n| extend\n    TimeGenerated = LoginTime,\n    AccountUpn = ActorUsername,\n    ReportId = tostring(hash_sha256(strcat(tostring(LoginTime), ActorUsername, SrcIpAddr)))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 4 - Okta privilege escalation after suspicious login",
+            "description": "An Okta user logged in from a non-US location and performed a privilege escalation action within 15 minutes. Stage 4 of the PoCaaS attack chain (T1078.004, T1098).",
+            "severity": "high",
+            "category": "PrivilegeEscalation",
+            "mitreTechniques": ["T1078.004", "T1098"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+}
+]

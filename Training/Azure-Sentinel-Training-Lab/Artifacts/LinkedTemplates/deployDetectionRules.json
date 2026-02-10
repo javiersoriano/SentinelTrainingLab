@@ -1,0 +1,86 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "scheduleStartTime": {
+            "type": "string",
+            "metadata": {
+                "description": "UTC start time for the one-time detection-rules schedule (should run before data ingestion)"
+            }
+        }
+    },
+    "variables": {
+        "automationAccountName": "[concat('sentineltraining', uniqueString(resourceGroup().id))]",
+        "runbookName": "DeployDetectionRules",
+        "scheduleName": "DeployDetectionRulesOnce"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[variables('automationAccountName')]",
+            "location": "[resourceGroup().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "sku": {
+                    "name": "Basic"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(variables('automationAccountName'), '/', variables('runbookName'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
+            ],
+            "properties": {
+                "runbookType": "PowerShell",
+                "logProgress": true,
+                "logVerbose": true,
+                "publishContentLink": {
+                    "uri": "[concat('https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/DeployDetectionRules.ps1', '?v=', parameters('scheduleStartTime'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/schedules",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(variables('automationAccountName'), '/', variables('scheduleName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName'))]"
+            ],
+            "properties": {
+                "frequency": "OneTime",
+                "startTime": "[parameters('scheduleStartTime')]",
+                "timeZone": "UTC"
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/jobSchedules",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(variables('automationAccountName'), '/', guid(variables('automationAccountName'), variables('runbookName'), variables('scheduleName')))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts/runbooks', variables('automationAccountName'), variables('runbookName'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts/schedules', variables('automationAccountName'), variables('scheduleName'))]"
+            ],
+            "properties": {
+                "runbook": {
+                    "name": "[variables('runbookName')]"
+                },
+                "schedule": {
+                    "name": "[variables('scheduleName')]"
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "principalId": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Automation/automationAccounts', variables('automationAccountName')), '2019-06-01', 'Full').identity.principalId]"
+        }
+    }
+}
