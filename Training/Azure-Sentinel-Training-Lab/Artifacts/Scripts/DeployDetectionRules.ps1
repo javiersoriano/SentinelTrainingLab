@@ -65,6 +65,10 @@ $headers = @{
     "Content-Type"  = "application/json"
 }
 
+# Retry settings for tables that may not exist yet (e.g., OktaV2_CL)
+$retryMaxAttempts  = 6
+$retryDelaySeconds = 300
+
 # ── Download & extract repo ──────────────────────────────────────────────────
 $workdir  = Join-Path -Path $env:TEMP -ChildPath "sentinel-training-demo"
 $repoZip  = Join-Path -Path $workdir  -ChildPath "repo.zip"
@@ -118,21 +122,38 @@ foreach ($rule in $rules) {
     }
 
     $body = $rule | ConvertTo-Json -Depth 10 -Compress
+    $queryText = $rule.queryCondition.queryText
+    $requiresOktaTable = $queryText -match '\bOktaV2_CL\b'
     Write-Output "CREATE: '$($rule.displayName)' ..."
 
-    try {
-        $result = Invoke-RestMethod -Uri $graphBaseUrl `
-            -Headers $headers `
-            -Method Post `
-            -Body $body
+    $attempt = 1
+    while ($true) {
+        try {
+            $result = Invoke-RestMethod -Uri $graphBaseUrl `
+                -Headers $headers `
+                -Method Post `
+                -Body $body
 
-        Write-Output "  -> Created with id $($result.id)"
-        $created++
-    }
-    catch {
-        $statusCode = $_.Exception.Response.StatusCode.value__
-        $detail     = $_.ErrorDetails.Message
-        Write-Warning "  -> FAILED ($statusCode): $detail"
+            Write-Output "  -> Created with id $($result.id)"
+            $created++
+            break
+        }
+        catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            $detail     = $_.ErrorDetails.Message
+            $isSyntaxError = $detail -match 'syntax errors'
+
+            if ($requiresOktaTable -and $isSyntaxError -and $attempt -lt $retryMaxAttempts) {
+                Write-Warning "  -> FAILED ($statusCode): $detail"
+                Write-Output "  -> Waiting $retryDelaySeconds seconds for OktaV2_CL to appear (attempt $attempt/$retryMaxAttempts)..."
+                Start-Sleep -Seconds $retryDelaySeconds
+                $attempt++
+                continue
+            }
+
+            Write-Warning "  -> FAILED ($statusCode): $detail"
+            break
+        }
     }
 }
 
