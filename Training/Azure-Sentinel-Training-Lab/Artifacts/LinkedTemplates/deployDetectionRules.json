@@ -18,7 +18,7 @@
     "variables": {
         "automationAccountName": "[concat('sentineldetections', uniqueString(resourceGroup().id))]",
         "runbookName": "DeployDetectionRules",
-        "scheduleName": "DeployDetectionRulesOnce"
+        "scheduleName": "[concat('DeployDetectionRulesOnce-', uniqueString(resourceGroup().id, deployment().name))]"
     },
     "resources": [
         {
