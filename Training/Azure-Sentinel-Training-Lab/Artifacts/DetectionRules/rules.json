@@ -238,5 +238,33 @@
         "organizationalScope": null,
         "responseActions": []
     }
+},
+{
+    "displayName": "PoCaaS  Stage 10 Phishing Emails Bypassing MailGuard365",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "MailGuard365_Threats_CL\n| where TimeGenerated > ago(1h)\n| where ThreatVerdict == \"Phishing\" and Action == \"Allow\"\n| where toint(ThreatConfidence) >= 80\n| extend SenderDomainLower = tolower(SenderDomain)\n| summarize\n    PhishCount = count(),\n    Subjects = make_set(Subject),\n    TargetRecipients = make_set(RecipientAddress),\n    SenderAddresses = make_set(SenderAddress),\n    SenderIPs = make_set(SenderIP),\n    AvgConfidence = avg(toint(ThreatConfidence)),\n    MaliciousUrls = make_set(Urls),\n    MaliciousAttachments = make_set(AttachmentName),\n    FirstSeen = min(TimeGenerated),\n    LastSeen = max(TimeGenerated)\n    by SenderDomainLower\n| where PhishCount >= 2\n| project\n    FirstSeen,\n    LastSeen,\n    SenderDomainLower,\n    PhishCount,\n    AvgConfidence,\n    SenderAddresses,\n    SenderIPs,\n    TargetRecipients,\n    Subjects,\n    MaliciousUrls,\n    MaliciousAttachments\n| extend\n    TimeGenerated = FirstSeen,\n    AccountUpn = tostring(TargetRecipients[0]),\n    RemoteIP = tostring(SenderIPs[0]),\n    ReportId = tostring(hash_sha256(strcat(SenderDomainLower, tostring(PhishCount), tostring(FirstSeen))))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 10 - Phishing campaign bypassed MailGuard365 email filtering",
+            "description": "Multiple phishing emails from the same sender domain were allowed through to recipient mailboxes despite high-confidence phishing verdicts from MailGuard365. Stage 10 of the PoCaaS attack chain (T1566.001, T1566.002).",
+            "severity": "high",
+            "category": "InitialAccess",
+            "mitreTechniques": ["T1566.001", "T1566.002"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
 }
 ]
