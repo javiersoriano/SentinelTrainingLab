@@ -17,7 +17,6 @@ Before deploying the lab, ensure the following requirements are met:
 2. **Microsoft Sentinel workspace onboarded to Microsoft Defender XDR** — The Log Analytics workspace must be connected to the [unified security operations platform (Defender XDR)](https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal). This is required for the custom detection rules to deploy correctly via the Microsoft Graph Security API.
 3. **Primary workspace** — The workspace used for this lab must be set as the **primary workspace** in Microsoft Defender XDR. Custom detection rules target the primary workspace by default.
 4. **Owner or Contributor role** on the target resource group (needed to create resources and assign RBAC roles during deployment).
-5. **Microsoft 365 Defender license** (e.g., Microsoft 365 E5 or Microsoft Defender for Endpoint P2) if you want the custom detection rules to be functional in the Defender portal.
 
 ### Custom Detection Rules (optional)
 
