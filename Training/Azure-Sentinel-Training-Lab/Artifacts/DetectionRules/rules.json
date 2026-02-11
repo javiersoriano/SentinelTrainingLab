@@ -1,6 +1,6 @@
 [
   {
-    "displayName": "PoCaaS – Stage 2 – Malicious Payload Execution (CrowdStrike)",
+    "displayName": "PoCaaS  Stage 2  Malicious Payload Execution (CrowdStrike)",
     "isEnabled": true,
     "queryCondition": {
       "queryText": "CrowdStrikeDetections\n| where TimeGenerated > ago(1h)\n| where Tactic == \"Execution\" or Technique has \"T1204\"\n| where SeverityName in (\"High\", \"Critical\")\n| project\n    TimeGenerated,\n    Name,\n    Description,\n    SeverityName,\n    Tactic,\n    Technique,\n    UserName,\n    SourceAccountUpn,\n    Filename,\n    Filepath,\n    Sha256,\n    Md5,\n    Cmdline,\n    Device\n| extend\n    AccountUpn = SourceAccountUpn,\n    DeviceName = tostring(Device.hostname),\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), Name, tostring(Device.hostname))))"
@@ -156,7 +156,7 @@
     }
 },
 {
-    "displayName": "PoCaaS – Stage 7 – AWS IAM Escalation and Suspicious Cloud Activity",
+    "displayName": "PoCaaS  Stage 7 AWS IAM Escalation and Suspicious Cloud Activity",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "let suspicious_events = dynamic([\n    \"ConsoleLogin\",\n    \"CreateUser\",\n    \"AttachUserPolicy\",\n    \"AuthorizeSecurityGroupIngress\",\n    \"RunInstances\",\n    \"GetObject\",\n    \"StopLogging\"\n]);\nAWSCloudTrail\n| where TimeGenerated > ago(2h)\n| where EventName in (suspicious_events)\n| summarize\n    EventSequence = make_set(EventName),\n    EventCount = count(),\n    FirstEvent = min(TimeGenerated),\n    LastEvent = max(TimeGenerated),\n    SourceIPs = make_set(SourceIpAddress),\n    UserArn = take_any(UserIdentityArn)\n    by UserIdentityUserName\n| where EventCount >= 3\n| where set_has_element(EventSequence, \"CreateUser\") or set_has_element(EventSequence, \"AttachUserPolicy\") or set_has_element(EventSequence, \"StopLogging\")\n| extend DurationMin = datetime_diff('minute', LastEvent, FirstEvent)\n| project\n    FirstEvent,\n    LastEvent,\n    DurationMin,\n    UserIdentityUserName,\n    EventSequence,\n    EventCount,\n    SourceIPs,\n    UserArn\n| extend\n    TimeGenerated = FirstEvent,\n    AccountUpn = strcat(UserIdentityUserName, \"@pkwork.onmicrosoft.com\"),\n    RemoteIP = tostring(SourceIPs[0]),\n    ReportId = tostring(hash_sha256(strcat(UserIdentityUserName, tostring(EventCount), tostring(FirstEvent))))"
@@ -171,6 +171,62 @@
             "severity": "high",
             "category": "Impact",
             "mitreTechniques": ["T1078", "T1098", "T1496", "T1562.008"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+},
+{
+    "displayName": "PoCaaS  Stage 8 AWS Backdoor Account Login from Creator IP",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "let account_creations = AWSCloudTrail\n| where TimeGenerated > ago(2h)\n| where EventName == \"CreateUser\"\n| extend CreatedUser = tostring(parse_json(RequestParameters).userName)\n| project CreationTime = TimeGenerated, CreatorUser = UserIdentityUserName, CreatedUser, CreatorIP = SourceIpAddress, UserIdentityArn;\nlet new_user_logins = AWSCloudTrail\n| where TimeGenerated > ago(2h)\n| where EventName == \"ConsoleLogin\"\n| where tostring(parse_json(ResponseElements).ConsoleLogin) == \"Success\"\n| project LoginTime = TimeGenerated, LoginUser = UserIdentityUserName, LoginIP = SourceIpAddress;\naccount_creations\n| join kind=inner new_user_logins on $left.CreatedUser == $right.LoginUser\n| where LoginIP == CreatorIP\n| where LoginTime > CreationTime\n| project\n    CreationTime,\n    LoginTime,\n    CreatorUser,\n    CreatedUser,\n    SharedIP = CreatorIP,\n    UserIdentityArn\n| extend\n    TimeGenerated = LoginTime,\n    AccountUpn = strcat(CreatedUser, \"@pkwork.onmicrosoft.com\"),\n    RemoteIP = SharedIP,\n    ReportId = tostring(hash_sha256(strcat(CreatorUser, CreatedUser, SharedIP, tostring(LoginTime))))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 8 - AWS backdoor account logged in from creator IP",
+            "description": "A newly created IAM user logged into the AWS console from the same IP address used by the account that created it. This is a strong indicator of persistence via a backdoor account. Stage 8 of the PoCaaS attack chain (T1136.003, T1078.004).",
+            "severity": "high",
+            "category": "Persistence",
+            "mitreTechniques": ["T1136.003", "T1078.004"],
+            "recommendedActions": null,
+            "impactedAssets": [
+                {
+                    "@odata.type": "#microsoft.graph.security.impactedUserAsset",
+                    "identifier": "accountUpn"
+                }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+},
+{
+    "displayName": "PoCaaS  Stage 9 GCP IAM Privilege Escalation and Resource Abuse",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "let suspicious_methods = dynamic([\n    \"google.iam.admin.v1.CreateServiceAccount\",\n    \"google.iam.admin.v1.CreateServiceAccountKey\",\n    \"SetIamPolicy\",\n    \"v1.compute.firewalls.insert\",\n    \"v1.compute.instances.insert\",\n    \"google.logging.v2.ConfigServiceV2.DeleteSink\",\n    \"google.logging.v2.ConfigServiceV2.UpdateSink\"\n]);\nGCPAuditLogs\n| where TimeGenerated > ago(2h)\n| where MethodName in (suspicious_methods) or MethodName has_any (\"SetIamPolicy\", \"DeleteSink\", \"UpdateSink\")\n| extend CallerIp = tostring(parse_json(RequestMetadata).callerIp)\n| where CallerIp !startswith \"10.\" and CallerIp !startswith \"192.168.\"\n| summarize\n    EventSequence = make_set(MethodName),\n    EventCount = count(),\n    FirstEvent = min(TimeGenerated),\n    LastEvent = max(TimeGenerated),\n    SourceIPs = make_set(CallerIp),\n    TargetResources = make_set(GCPResourceName)\n    by PrincipalEmail, ProjectId\n| where EventCount >= 3\n| where set_has_element(EventSequence, \"google.iam.admin.v1.CreateServiceAccount\") or set_has_element(EventSequence, \"SetIamPolicy\") or EventSequence has \"DeleteSink\" or EventSequence has \"UpdateSink\"\n| extend DurationMin = datetime_diff('minute', LastEvent, FirstEvent)\n| project\n    FirstEvent,\n    LastEvent,\n    DurationMin,\n    PrincipalEmail,\n    ProjectId,\n    EventSequence,\n    EventCount,\n    SourceIPs,\n    TargetResources\n| extend\n    TimeGenerated = FirstEvent,\n    AccountUpn = PrincipalEmail,\n    RemoteIP = tostring(SourceIPs[0]),\n    ReportId = tostring(hash_sha256(strcat(PrincipalEmail, ProjectId, tostring(EventCount), tostring(FirstEvent))))"
+    },
+    "schedule": {
+        "period": "1H"
+    },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "PoCaaS Stage 9 - GCP IAM privilege escalation and resource abuse",
+            "description": "A GCP principal created service accounts, modified IAM policies, opened firewall rules, spun up compute instances, or disabled logging sinks from an external IP. Stage 9 of the PoCaaS attack chain (T1136.003, T1098, T1496, T1562.008).",
+            "severity": "high",
+            "category": "PrivilegeEscalation",
+            "mitreTechniques": ["T1136.003", "T1098", "T1496", "T1562.008"],
             "recommendedActions": null,
             "impactedAssets": [
                 {
