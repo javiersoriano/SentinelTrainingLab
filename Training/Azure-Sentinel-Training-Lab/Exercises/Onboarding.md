@@ -89,6 +89,8 @@ Microsoft Sentinel ingests data from services and apps by connecting to them and
 
 1. In Microsoft Sentinel, select **Configuration > Data connectors**.
 2. Search for and select the **Azure Activity** data connector.
+<img src="../Images/OnboardingImage6.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+
 3. In the connector details pane, select **Open connector page** and follow the instructions:
    1. Select **Launch Azure Policy Assignment Wizard**.
    2. On the **Basics** tab, set the **Scope** to the subscription and resource group that has activity to send to Microsoft Sentinel.
@@ -120,11 +122,19 @@ AzureActivity
 
 You should see Azure Activity events flowing into the workspace.
 
+<img src="../Images/OnboardingImage7.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+
 ---
 
 ## Exercise 8: Deploy the Microsoft Sentinel Training Lab Solution
 
 Now that your workspace is ready, deploy the Training Lab solution. This will ingest pre-recorded telemetry (~20 MB) and create several artifacts (analytics rules, workbooks, watchlists, playbooks) used in the subsequent exercises.
+
+Before deploying, make sure you meet the following prerequisites:
+
+- **Microsoft Sentinel workspace onboarded to Defender XDR** — Your workspace must be connected to the [unified security operations platform](https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal) and set as the **primary workspace**.
+- **Owner or Contributor** role on the resource group where the lab will be deployed.
+- **User-Assigned Managed Identity (UAMI)** — If you want the lab to automatically deploy **custom detection rules** via the Microsoft Graph Security API, you must create a UAMI with the `CustomDetection.ReadWrite.All` permission **before** deploying. Follow the step-by-step instructions in the [README — Custom Detection Rules](../README.md#custom-detection-rules-optional) section. If you skip this, detection rules will not be deployed but the rest of the lab will work normally.
 
 Click the button below to deploy directly into your Azure subscription:
 
@@ -137,19 +147,6 @@ Click the button below to deploy directly into your Azure subscription:
 > **Note:** The deployment takes approximately **15 minutes**. This includes ingesting all the pre-recorded data so it's ready when deployment finishes.
 
 4. Once the deployment completes, go back to Microsoft Sentinel and select your workspace. On the home page you should see ingested data and several recent incidents. If incidents don't appear immediately, wait a few minutes for them to be raised.
-
----
-
-## Exercise 9: Configure the Sentinel Playbook
-
-Configure the playbook that will be used in later exercises.
-
-1. Navigate to the resource group where the lab was deployed.
-2. Find and select the API Connection resource called **azuresentinel-Get-GeoFromIpAndTagIncident**.
-3. Under **General**, click **Edit API connection**.
-4. Click **Authorize** and sign in with the user account you're using for the lab.
-5. Click **Save**.
-
 ---
 
 ## Next steps
