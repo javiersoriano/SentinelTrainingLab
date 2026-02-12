@@ -44,7 +44,11 @@ Microsoft Sentinel runs on top of a Log Analytics workspace. If you already have
 ## Exercise 2: Add Microsoft Sentinel to your workspace
 
 1. From the [Azure portal](https://portal.azure.com/), search for and select **Microsoft Sentinel**.
+<img src="../Images/OnboardingImage1.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+
 2. Select **Create**.
+<img src="../Images/OnboardingImage2.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+
 3. Select the workspace you created in Exercise 1 and select **Add**.
 
 > **Note:** Default workspaces created by Microsoft Defender for Cloud are not shown in the list. Once deployed on a workspace, Microsoft Sentinel does not support moving that workspace to another resource group or subscription.
@@ -57,7 +61,11 @@ Microsoft Sentinel runs on top of a Log Analytics workspace. If you already have
 
 1. Sign in to the [Microsoft Defender portal](https://security.microsoft.com/).
 2. Once provisioned, you'll see **Microsoft Sentinel** in the navigation pane with its nodes nested within.
-3. Scroll down and select **Settings > Microsoft Sentinel > Workspaces** to verify your workspace is onboarded and available.
+<img src="../Images/OnboardingImage3.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+
+3. Scroll down and select **Settings > Microsoft Sentinel > Workspaces** to verify your workspace is onboarded and available. Click **Connect**
+
+<img src="../Images/OnboardingImage4.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
 
 > The Defender portal supports multiple workspaces with one acting as the primary per tenant. For more information, see [Multiple workspaces in the Defender portal](https://learn.microsoft.com/en-us/azure/sentinel/workspaces-defender-portal).
 
@@ -70,6 +78,8 @@ The Content Hub is the centralized location to discover and manage out-of-the-bo
 1. In Microsoft Sentinel, browse to the **Content hub** page.
 2. Search for and select the **Azure Activity** solution.
 3. In the solution details pane, select **Install**.
+
+<img src="../Images/OnboardingImage5.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
 
 ---
 
