@@ -147,7 +147,8 @@ Click the button below to deploy directly into your Azure subscription:
 > **Note:** The deployment takes approximately **15 minutes**. This includes ingesting all the pre-recorded data so it's ready when deployment finishes.
 
 4. Once the deployment completes, go back to Microsoft Sentinel and select your workspace. On the home page you should see ingested data and several recent incidents. If incidents don't appear immediately, wait a few minutes for them to be raised.
----
+
+
 
 ## Next steps
 
