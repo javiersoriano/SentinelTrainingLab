@@ -305,7 +305,7 @@
                         {
                             "type": "Microsoft.Automation/automationAccounts/jobSchedules",
                             "apiVersion": "2019-06-01",
-                            "name": "[concat(variables('automationAccountName'), '/', guid(variables('automationAccountName'), 'IngestTrainingTelemetry', parameters('scheduleName'), deployment().name))]",
+                            "name": "[concat(variables('automationAccountName'), '/', guid(variables('automationAccountName'), 'IngestTrainingTelemetry', parameters('scheduleName')))]",
                             "dependsOn": [
                                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks', variables('automationAccountName'), 'IngestTrainingTelemetry')]",
                                 "[resourceId('Microsoft.Automation/automationAccounts/schedules', variables('automationAccountName'), parameters('scheduleName'))]",
