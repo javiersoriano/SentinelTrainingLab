@@ -11,16 +11,18 @@ The lab deploys a Microsoft Sentinel workspace and ingests pre-recorded data to 
 
 ## Prerequisites
 
-Before deploying the lab, ensure the following requirements are met:
+Before you begin, make sure you have:
 
-1. **Microsoft Sentinel workspace onboarded to Microsoft Defender XDR** — The Log Analytics workspace must be connected to the [unified security operations platform (Defender XDR)](https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal). This is required for the custom detection rules to deploy correctly via the Microsoft Graph Security API.
-2. **Primary workspace** — The workspace used for this lab must be set as the **primary workspace** in Microsoft Defender XDR. Custom detection rules target the primary workspace by default.
-3. **Owner or Contributor role** on the target resource group (needed to create resources and assign RBAC roles during deployment).
+1. **Azure subscription** — If you don't have one, create a [free account](https://azure.microsoft.com/pricing/purchase-options/azure-account).
+2. **Owner or Contributor role** on the target resource group (needed to create resources and assign RBAC roles during deployment).
+3. **Microsoft Sentinel workspace onboarded to Microsoft Defender XDR** — The Log Analytics workspace must be connected to the [unified security operations platform (Defender XDR)](https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal) and set as the **primary workspace**. The [Onboarding exercise](./Exercises/Onboarding.md) walks you through this step by step.
 4. **For the best experience**, enable [Microsoft Sentinel Data Lake](https://learn.microsoft.com/en-us/azure/sentinel/data-lake) on your workspace. This allows long-term, low-cost retention of security data and enables advanced hunting over extended time ranges.
 
-### Custom Detection Rules (optional)
+## Custom Detection Rules Setup
 
-The lab can automatically deploy **custom detection rules** to Microsoft 365 Defender via the Microsoft Graph Security API. This requires a **User-Assigned Managed Identity (UAMI)** with the `CustomDetection.ReadWrite.All` Microsoft Graph application permission, created **before** deploying the template.
+This lab deploys **custom detection rules** to Microsoft Defender XDR via the Microsoft Graph Security API. This requires a **User-Assigned Managed Identity (UAMI)** with the `CustomDetection.ReadWrite.All` Microsoft Graph application permission, created **before** deploying the template.
+
+Complete the following steps before deployment.
 
 #### 1. Create the User-Assigned Managed Identity
 
@@ -51,15 +53,40 @@ az rest --method POST `
 
 #### 3. Deploy the template
 
-Pass the UAMI's **full resource ID** as the `detectionRulesIdentityResourceId` parameter when deploying:
+Pass the UAMI's **full resource ID** as the `detectionRulesIdentityResourceId` parameter when deploying (in the [Onboarding Exercise 8](./Exercises/Onboarding.md#exercise-8-deploy-the-microsoft-sentinel-training-lab-solution)):
 
 ```
 /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/SentinelDetectionRulesIdentity
 ```
 
-> **Note:** If you skip this parameter, detection rules will not be deployed, but the rest of the lab (workspace, ingestion, alert rules, workbook, etc.) will work normally.
+## Getting started
 
-## Log ingestion (modern API)
+Start with the **Onboarding** exercise to set up your workspace, install solutions, and deploy the lab. Then work through Exercises 1–6 in order — each builds on the previous one.
+
+## Exercises
+
+[**Onboarding — Setting up the environment**](./Exercises/Onboarding.md)
+- Create a Log Analytics workspace and onboard Microsoft Sentinel
+- Install Content Hub solutions and set up data connectors
+- Deploy the Training Lab solution
+
+[**Exercise 1 — Threat Intel IOC Matching**](./Exercises/E1_threat_intel_ioc_matching.md)
+
+[**Exercise 2 — Port Scan Threshold Tuning**](./Exercises/E2_port_scan_threshold_tuning.md)
+
+[**Exercise 3 — Okta MFA Manipulation**](./Exercises/E3_okta_mfa_manipulation.md)
+
+[**Exercise 4 — Watchlist Integration**](./Exercises/E4_watchlist_integration.md)
+
+[**Exercise 5 — Data Lake Port Diversity**](./Exercises/E5_datalake_port_diversity.md)
+
+[**Exercise 6 — Device Isolation Response**](./Exercises/E6_device_isolation_response.md)
+
+---
+
+## Reference
+
+### Log ingestion (modern API)
 
 The training lab includes a script that uses the Azure Monitor Logs Ingestion API to ingest **custom tables only** (tables ending with `_CL`). Built-in tables are not ingested by this API and should be populated via their native data connectors instead.
 
@@ -77,29 +104,6 @@ This script:
 
 See the script header for parameters and usage.
 
-## Last release notes
+### Release notes
 
-* Version 1.0 - Microsoft Sentinel Training Lab 
-
-## Getting started
-
-Start with the **Onboarding** exercise to set up your environment. Then work through Exercises 1–6 in order — each builds on the previous one.
-
-## Exercises
-
-[**Onboarding — Setting up the environment**](./Exercises/Onboarding.md)
-- Create a Log Analytics workspace and add Microsoft Sentinel
-- Install Content Hub solutions and set up data connectors
-- Deploy the Training Lab solution and configure the playbook
-
-[**Exercise 1 — Threat Intel IOC Matching**](./Exercises/E1_threat_intel_ioc_matching.md)
-
-[**Exercise 2 — Port Scan Threshold Tuning**](./Exercises/E2_port_scan_threshold_tuning.md)
-
-[**Exercise 3 — Okta MFA Manipulation**](./Exercises/E3_okta_mfa_manipulation.md)
-
-[**Exercise 4 — Watchlist Integration**](./Exercises/E4_watchlist_integration.md)
-
-[**Exercise 5 — Data Lake Port Diversity**](./Exercises/E5_datalake_port_diversity.md)
-
-[**Exercise 6 — Device Isolation Response**](./Exercises/E6_device_isolation_response.md)
+* Version 1.0 - Microsoft Sentinel Training Lab

@@ -9,16 +9,9 @@ In this exercise you will onboard Microsoft Sentinel, install a solution from th
 
 ## Prerequisites
 
-Before you begin, make sure you have the following:
+Make sure you have completed the [Prerequisites](../README.md#prerequisites) and [Custom Detection Rules Setup](../README.md#custom-detection-rules-setup) sections in the README before starting.
 
-- **Azure subscription** — If you don't have one, create a [free account](https://azure.microsoft.com/pricing/purchase-options/azure-account) before you begin.
-- **Permissions**:
-  - **Contributor** permissions on the subscription in which the Microsoft Sentinel workspace resides (to enable Microsoft Sentinel).
-  - **Microsoft Sentinel Contributor** or **Microsoft Sentinel Reader** on the resource group that the workspace belongs to (to use Microsoft Sentinel).
-  - **Owner** or **User Access Administrator** on the subscription if you are a new Microsoft Sentinel customer — your workspace is automatically onboarded to the Defender portal.
-- **Pricing** — Microsoft Sentinel is a paid service. Review the [pricing options](https://go.microsoft.com/fwlink/?linkid=2104058) and the [Microsoft Sentinel pricing page](https://azure.microsoft.com/pricing/details/azure-sentinel/). Microsoft Sentinel provides a trial mode where data ingestion up to 10 GB/day is free for the first 31 days.
-
-> For a detailed list of predeployment activities, see [Prerequisites for deploying Microsoft Sentinel](https://learn.microsoft.com/en-us/azure/sentinel/prerequisites).
+> For Microsoft's full predeployment checklist, see [Prerequisites for deploying Microsoft Sentinel](https://learn.microsoft.com/en-us/azure/sentinel/prerequisites).
 
 ---
 
@@ -44,10 +37,10 @@ Microsoft Sentinel runs on top of a Log Analytics workspace. If you already have
 ## Exercise 2: Add Microsoft Sentinel to your workspace
 
 1. From the [Azure portal](https://portal.azure.com/), search for and select **Microsoft Sentinel**.
-<img src="../Images/OnboardingImage1.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+<img src="../Images/OnboardingImage1.png" alt="Microsoft Sentinel in the Azure portal navigation" width="600">
 
 2. Select **Create**.
-<img src="../Images/OnboardingImage2.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+<img src="../Images/OnboardingImage2.png" alt="Create a new Microsoft Sentinel instance" width="600">
 
 3. Select the workspace you created in Exercise 1 and select **Add**.
 
@@ -61,11 +54,11 @@ Microsoft Sentinel runs on top of a Log Analytics workspace. If you already have
 
 1. Sign in to the [Microsoft Defender portal](https://security.microsoft.com/).
 2. Once provisioned, you'll see **Microsoft Sentinel** in the navigation pane with its nodes nested within.
-<img src="../Images/OnboardingImage3.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+<img src="../Images/OnboardingImage3.png" alt="Microsoft Sentinel in the Defender portal navigation pane" width="600">
 
 3. Scroll down and select **Settings > Microsoft Sentinel > Workspaces** to verify your workspace is onboarded and available. Click **Connect**
 
-<img src="../Images/OnboardingImage4.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+<img src="../Images/OnboardingImage4.png" alt="Connect workspace in Defender portal settings" width="600">
 
 > The Defender portal supports multiple workspaces with one acting as the primary per tenant. For more information, see [Multiple workspaces in the Defender portal](https://learn.microsoft.com/en-us/azure/sentinel/workspaces-defender-portal).
 
@@ -79,7 +72,7 @@ The Content Hub is the centralized location to discover and manage out-of-the-bo
 2. Search for and select the **Azure Activity** solution.
 3. In the solution details pane, select **Install**.
 
-<img src="../Images/OnboardingImage5.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+<img src="../Images/OnboardingImage5.png" alt="Install Azure Activity solution from Content Hub" width="600">
 
 ---
 
@@ -89,7 +82,7 @@ Microsoft Sentinel ingests data from services and apps by connecting to them and
 
 1. In Microsoft Sentinel, select **Configuration > Data connectors**.
 2. Search for and select the **Azure Activity** data connector.
-<img src="../Images/OnboardingImage6.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+<img src="../Images/OnboardingImage6.png" alt="Azure Activity data connector in the connectors list" width="600">
 
 3. In the connector details pane, select **Open connector page** and follow the instructions:
    1. Select **Launch Azure Policy Assignment Wizard**.
@@ -122,7 +115,7 @@ AzureActivity
 
 You should see Azure Activity events flowing into the workspace.
 
-<img src="../Images/OnboardingImage7.png" alt="Search for Microsoft Sentinel in the Azure portal" width="600">
+<img src="../Images/OnboardingImage7.png" alt="AzureActivity query results in Advanced Hunting" width="600">
 
 ---
 
@@ -130,11 +123,7 @@ You should see Azure Activity events flowing into the workspace.
 
 Now that your workspace is ready, deploy the Training Lab solution. This will ingest pre-recorded telemetry (~20 MB) and create several artifacts (analytics rules, workbooks, watchlists, playbooks) used in the subsequent exercises.
 
-Before deploying, make sure you meet the following prerequisites:
-
-- **Microsoft Sentinel workspace onboarded to Defender XDR** — Your workspace must be connected to the [unified security operations platform](https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal) and set as the **primary workspace**.
-- **Owner or Contributor** role on the resource group where the lab will be deployed.
-- **User-Assigned Managed Identity (UAMI)** — If you want the lab to automatically deploy **custom detection rules** via the Microsoft Graph Security API, you must create a UAMI with the `CustomDetection.ReadWrite.All` permission **before** deploying. Follow the step-by-step instructions in the [README — Custom Detection Rules](../README.md#custom-detection-rules-optional) section. If you skip this, detection rules will not be deployed but the rest of the lab will work normally.
+Make sure you have completed all the setup from the [README](../README.md) — including the **Custom Detection Rules Setup** (UAMI with `CustomDetection.ReadWrite.All` permission). You will need the UAMI's full resource ID during deployment.
 
 Click the button below to deploy directly into your Azure subscription:
 
