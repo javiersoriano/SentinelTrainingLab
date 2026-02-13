@@ -809,12 +809,10 @@ function Build-BuiltInTransformKql {
         [object[]]$SchemaColumns
     )
 
+    # Only cast guid and datetime — numeric/bool columns must stay as strings
+    # because the built-in output stream (e.g. Microsoft-CommonSecurityLog)
+    # declares them as String. The destination table handles final typing.
     $typeCasts = @{
-        int      = "toint"
-        long     = "tolong"
-        real     = "todouble"
-        bool     = "tobool"
-        boolean  = "tobool"
         guid     = "toguid"
         datetime = "todatetime"
     }
