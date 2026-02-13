@@ -202,9 +202,10 @@ function Invoke-ArmRest {
         $tempFile = [System.IO.Path]::GetTempFileName()
         try {
             $JsonBody | Out-File -FilePath $tempFile -Encoding utf8
-            $null = az rest --method put --uri $Uri --headers "Content-Type=application/json" --body "@$tempFile"
+            $output = az rest --method put --uri $Uri --headers "Content-Type=application/json" --body "@$tempFile" 2>&1
             if ($LASTEXITCODE -ne 0) {
-                throw "az rest PUT failed with exit code $LASTEXITCODE for $Uri"
+                $errorOutput = ($output | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }) -join "`n"
+                throw "az rest PUT failed with exit code $LASTEXITCODE for ${Uri}: $errorOutput"
             }
         } finally {
             Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
@@ -803,16 +804,46 @@ function Split-RecordsBySize {
     }
 }
 
+function Get-OutputTypeOverridesFromError {
+    param([string]$ErrorText)
+
+    $overrides = @{}
+    $typeMap = @{
+        'String'   = 'string'
+        'Int'      = 'int'
+        'Long'     = 'long'
+        'Double'   = 'real'
+        'Bool'     = 'bool'
+        'DateTime' = 'datetime'
+        'Guid'     = 'guid'
+        'Dynamic'  = 'dynamic'
+    }
+
+    $pattern = '(\w+)\s+\[produced:''(\w+)'',\s*output:''(\w+)''\]'
+    $parsed = [regex]::Matches($ErrorText, $pattern)
+    foreach ($m in $parsed) {
+        $colName    = $m.Groups[1].Value
+        $outputType = $m.Groups[3].Value
+        if ($typeMap.ContainsKey($outputType)) {
+            $overrides[$colName] = $typeMap[$outputType]
+        }
+    }
+    return $overrides
+}
+
 function Build-BuiltInTransformKql {
     param(
         [hashtable]$ColumnMap,
-        [object[]]$SchemaColumns
+        [object[]]$SchemaColumns,
+        [hashtable]$OutputTypeOverrides
     )
 
-    # Only cast guid and datetime — numeric/bool columns must stay as strings
-    # because the built-in output stream (e.g. Microsoft-CommonSecurityLog)
-    # declares them as String. The destination table handles final typing.
     $typeCasts = @{
+        int      = "toint"
+        long     = "tolong"
+        real     = "todouble"
+        bool     = "tobool"
+        boolean  = "tobool"
         guid     = "toguid"
         datetime = "todatetime"
     }
@@ -844,7 +875,11 @@ function Build-BuiltInTransformKql {
         if ($name -eq "TimeGenerated" -or $name -eq "TimeCollected") {
             continue
         }
-        $cast = $typeCasts[$column.type]
+        $effectiveType = $column.type
+        if ($OutputTypeOverrides -and $OutputTypeOverrides.ContainsKey($name)) {
+            $effectiveType = $OutputTypeOverrides[$name]
+        }
+        $cast = $typeCasts[$effectiveType]
         if ($cast) {
             $transformParts += "$name = $cast($name)"
         }
@@ -1237,8 +1272,27 @@ if (($DeployBuiltInDcr -or ($Ingest -and $BuiltInDcrImmutableId)) -and @($builtI
             try {
                 $dcrId = Initialize-Dcr -DcrName $dcrName -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -Template $template
             } catch {
-                Write-Host "Failed to deploy built-in DCR '$dcrName': $($_.Exception.Message)"
-                continue
+                $errMsg = $_.Exception.Message
+                if ($errMsg -match 'InvalidTransformOutput') {
+                    Write-Host "Type mismatch detected, adjusting transform and retrying..."
+                    $overrides = Get-OutputTypeOverridesFromError -ErrorText $errMsg
+                    if ($overrides.Count -gt 0) {
+                        $transformKql = Build-BuiltInTransformKql -ColumnMap $columnMap -SchemaColumns $schemaColumns -OutputTypeOverrides $overrides
+                        $template = New-BuiltInDcrTemplate -TableName $tableName -WorkspaceResourceId $WorkspaceResourceId -DceResourceId $dceId -Location $Location -ColumnDefinitions $columnDefinitions -TransformKql $transformKql
+                        try {
+                            $dcrId = Initialize-Dcr -DcrName $dcrName -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -Template $template
+                        } catch {
+                            Write-Host "Failed to deploy built-in DCR '$dcrName' after retry: $($_.Exception.Message)"
+                            continue
+                        }
+                    } else {
+                        Write-Host "Failed to deploy built-in DCR '$dcrName': $errMsg"
+                        continue
+                    }
+                } else {
+                    Write-Host "Failed to deploy built-in DCR '$dcrName': $errMsg"
+                    continue
+                }
             }
 
             $immutableId = Get-DcrImmutableId -DcrId $dcrId
