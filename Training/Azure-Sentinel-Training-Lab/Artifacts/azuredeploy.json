@@ -85,6 +85,7 @@
             "name": "deployDetectionRules",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
+            "condition": "[or(not(empty(parameters('detectionRulesIdentityResourceId'))), not(empty(parameters('detectionRulesSpnClientId'))))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'workspaceCreation')]"
             ],
