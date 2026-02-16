@@ -13,7 +13,7 @@ Understand the difference between **real-time log detection** (E2) and **data la
 
 ## Background
 
-The PoCaaS environment ingests Palo Alto data in two ways:
+The Lab environment ingests Palo Alto data in two ways:
 
 | Source | Table | Data Type | Latency |
 |---|---|---|---|

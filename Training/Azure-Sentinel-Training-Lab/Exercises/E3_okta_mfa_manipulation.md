@@ -13,13 +13,13 @@ Detect when an attacker manipulates MFA factors in Okta after compromising an ac
 
 ## Background
 
-After gaining access to an account (e.g., via phishing — Stage 1 of the PoCaaS attack), adversaries often disable or reset MFA factors to maintain persistent access. This is a critical step in the attack chain because:
+After gaining access to an account (e.g., via phishing — Stage 1 of the Lab attack), adversaries often disable or reset MFA factors to maintain persistent access. This is a critical step in the attack chain because:
 
 1. It removes the secondary authentication barrier
 2. It allows the attacker to re-enrol their own MFA device
 3. It may go unnoticed if the SOC isn't monitoring MFA lifecycle events
 
-In the PoCaaS scenario, the attacker compromises an Okta account via credential theft (S4) and then deactivates the victim's MFA factor to ensure continued access.
+In the Lab scenario, the attacker compromises an Okta account via credential theft (S4) and then deactivates the victim's MFA factor to ensure continued access.
 
 ### Relevant Okta Event Types
 

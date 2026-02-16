@@ -15,7 +15,7 @@ Learn how to correlate known Indicators of Compromise (IOCs) — IP addresses an
 
 Threat intelligence (TI) feeds provide lists of known-malicious IPs, domains, and file hashes. A core SOC capability is matching these IOCs against ingested log data to identify whether any known threats have touched the environment.
 
-The PoCaaS attack scenario uses specific IOCs that appear across multiple connectors:
+The Lab attack scenario uses specific IOCs that appear across multiple connectors:
 
 | IOC Type | Value | Appears In |
 |---|---|---|

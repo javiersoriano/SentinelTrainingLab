@@ -1,6 +1,6 @@
 [
   {
-    "displayName": "PoCaaS  Stage 2  Malicious Payload Execution (CrowdStrike)",
+    "displayName": "Lab  Stage 2  Malicious Payload Execution (CrowdStrike)",
     "isEnabled": true,
     "queryCondition": {
       "queryText": "CrowdStrikeDetections\n| where TimeGenerated > ago(1h)\n| where Tactic == \"Execution\" or Technique has \"T1204\"\n| where SeverityName in (\"High\", \"Critical\")\n| project\n    TimeGenerated,\n    Name,\n    Description,\n    SeverityName,\n    Tactic,\n    Technique,\n    UserName,\n    SourceAccountUpn,\n    Filename,\n    Filepath,\n    Sha256,\n    Md5,\n    Cmdline,\n    Device\n| extend\n    AccountUpn = SourceAccountUpn,\n    DeviceName = tostring(Device.hostname),\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), Name, tostring(Device.hostname))))"
@@ -10,8 +10,8 @@
     },
     "detectionAction": {
       "alertTemplate": {
-        "title": "PoCaaS Stage 2 Malicious payload execution detected by CrowdStrike",
-        "description": "CrowdStrike detected a high or critical severity execution event on an endpoint. Stage 2 of the PoCaaS attack chain (T1204.002).",
+        "title": "Lab Stage 2 Malicious payload execution detected by CrowdStrike",
+        "description": "CrowdStrike detected a high or critical severity execution event on an endpoint. Stage 2 of the Lab attack chain (T1204.002).",
         "severity": "high",
         "category": "Execution",
         "mitreTechniques": ["T1204.002"],
@@ -32,7 +32,7 @@
     }
   },
   {
-    "displayName": "PoCaaS Stage 3 Credential Dumping Detected (CrowdStrike)",
+    "displayName": "Lab Stage 3 Credential Dumping Detected (CrowdStrike)",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "CrowdStrikeDetections\n| where TimeGenerated > ago(1h)\n| where Tactic == \"Credential Access\" or Technique has \"T1003\"\n| where SeverityName in (\"High\", \"Critical\")\n| project\n    TimeGenerated,\n    Name,\n    Description,\n    SeverityName,\n    Tactic,\n    Technique,\n    UserName,\n    SourceAccountUpn,\n    Filename,\n    Filepath,\n    Cmdline,\n    Objective,\n    Device\n| extend\n    AccountUpn = SourceAccountUpn,\n    DeviceName = tostring(Device.hostname),\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), Name, tostring(Device.hostname))))"
@@ -42,8 +42,8 @@
     },
     "detectionAction": {
         "alertTemplate": {
-            "title": "PoCaaS Stage 3 - Credential dumping detected by CrowdStrike",
-            "description": "CrowdStrike detected credential dumping activity on an endpoint. Stage 3 of the PoCaaS attack chain (T1003.001).",
+            "title": "Lab Stage 3 - Credential dumping detected by CrowdStrike",
+            "description": "CrowdStrike detected credential dumping activity on an endpoint. Stage 3 of the Lab attack chain (T1003.001).",
             "severity": "high",
             "category": "CredentialAccess",
             "mitreTechniques": ["T1003.001"],
@@ -64,7 +64,7 @@
     }
   },
 {
-    "displayName": "PoCaaS Stage 3.5 Internal Port Scan Detected (Palo Alto)",
+    "displayName": "Lab Stage 3.5 Internal Port Scan Detected (Palo Alto)",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "CommonSecurityLog\n| where TimeGenerated > ago(1h)\n| where DeviceVendor == \"Palo Alto Networks\"\n| where DeviceEventClassID == \"TRAFFIC\"\n| where Activity in (\"drop\", \"deny\", \"end\")\n| where ApplicationProtocol == \"incomplete\"\n| summarize\n    DistinctPorts = dcount(DestinationPort),\n    DistinctHosts = dcount(DestinationIP),\n    SessionCount = count(),\n    FirstSeen = min(TimeGenerated),\n    LastSeen = max(TimeGenerated),\n    SourceHostName = take_any(SourceHostName)\n    by SourceIP, SourceUserName\n| where DistinctPorts > 20\n| extend\n    TimeGenerated = FirstSeen,\n    AccountUpn = SourceUserName,\n    DeviceName = SourceHostName,\n    ReportId = tostring(hash_sha256(strcat(SourceIP, SourceUserName, tostring(DistinctPorts))))"
@@ -74,8 +74,8 @@
     },
     "detectionAction": {
         "alertTemplate": {
-            "title": "PoCaaS Stage 3.5 - Internal port scan detected via Palo Alto",
-            "description": "A host scanned more than 20 distinct ports across internal hosts, indicating network reconnaissance. Stage 3.5 of the PoCaaS attack chain (T1046).",
+            "title": "Lab Stage 3.5 - Internal port scan detected via Palo Alto",
+            "description": "A host scanned more than 20 distinct ports across internal hosts, indicating network reconnaissance. Stage 3.5 of the Lab attack chain (T1046).",
             "severity": "medium",
             "category": "Discovery",
             "mitreTechniques": ["T1046"],
@@ -120,7 +120,7 @@
     }
 },
 {
-    "displayName": "PoCaaS  Stage 6 Large Data Exfiltration (Palo Alto)",
+    "displayName": "Lab  Stage 6 Large Data Exfiltration (Palo Alto)",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "CommonSecurityLog\n| where TimeGenerated > ago(1h)\n| where DeviceVendor == \"Palo Alto Networks\"\n| where DeviceEventClassID == \"TRAFFIC\"\n| where Activity == \"end\"\n| where isnotempty(DestinationIP)\n| where ipv4_is_private(DestinationIP) == false\n| where SentBytes > 10000000\n| project\n    TimeGenerated,\n    SourceIP,\n    DestinationIP,\n    DestinationPort,\n    SentBytes,\n    ReceivedBytes,\n    ApplicationProtocol,\n    SourceUserName,\n    SourceHostName,\n    DeviceAction\n| extend\n    SentMB = round(SentBytes / 1048576.0, 2),\n    AccountUpn = SourceUserName,\n    DeviceName = SourceHostName,\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), SourceIP, DestinationIP, tostring(SentBytes))))"
@@ -130,8 +130,8 @@
     },
     "detectionAction": {
         "alertTemplate": {
-            "title": "PoCaaS Stage 6 - Large data exfiltration to external IP",
-            "description": "Palo Alto firewall detected a session sending more than 10 MB to an external IP. This indicates potential data exfiltration. Stage 6 of the PoCaaS attack chain (T1041).",
+            "title": "Lab Stage 6 - Large data exfiltration to external IP",
+            "description": "Palo Alto firewall detected a session sending more than 10 MB to an external IP. This indicates potential data exfiltration. Stage 6 of the Lab attack chain (T1041).",
             "severity": "high",
             "category": "Exfiltration",
             "mitreTechniques": ["T1041"],
@@ -152,7 +152,7 @@
     }
 },
 {
-    "displayName": "PoCaaS  Stage 7 AWS IAM Escalation and Suspicious Cloud Activity",
+    "displayName": "Lab  Stage 7 AWS IAM Escalation and Suspicious Cloud Activity",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "let suspicious_events = dynamic([\n    \"ConsoleLogin\",\n    \"CreateUser\",\n    \"AttachUserPolicy\",\n    \"AuthorizeSecurityGroupIngress\",\n    \"RunInstances\",\n    \"GetObject\",\n    \"StopLogging\"\n]);\nAWSCloudTrail\n| where TimeGenerated > ago(2h)\n| where EventName in (suspicious_events)\n| summarize\n    EventSequence = make_set(EventName),\n    EventCount = count(),\n    FirstEvent = min(TimeGenerated),\n    LastEvent = max(TimeGenerated),\n    SourceIPs = make_set(SourceIpAddress),\n    UserArn = take_any(UserIdentityArn)\n    by UserIdentityUserName\n| where EventCount >= 3\n| where set_has_element(EventSequence, \"CreateUser\") or set_has_element(EventSequence, \"AttachUserPolicy\") or set_has_element(EventSequence, \"StopLogging\")\n| extend DurationMin = datetime_diff('minute', LastEvent, FirstEvent)\n| project\n    FirstEvent,\n    LastEvent,\n    DurationMin,\n    UserIdentityUserName,\n    EventSequence,\n    EventCount,\n    SourceIPs,\n    UserArn\n| extend\n    TimeGenerated = FirstEvent,\n    AccountUpn = strcat(UserIdentityUserName, \"@pkwork.onmicrosoft.com\"),\n    RemoteIP = tostring(SourceIPs[0]),\n    ReportId = tostring(hash_sha256(strcat(UserIdentityUserName, tostring(EventCount), tostring(FirstEvent))))"
@@ -162,8 +162,8 @@
     },
     "detectionAction": {
         "alertTemplate": {
-            "title": "PoCaaS Stage 7 - AWS IAM escalation and suspicious cloud activity",
-            "description": "An AWS IAM user performed multiple suspicious actions including account creation, policy attachment, or disabling CloudTrail. Stage 7 of the PoCaaS attack chain (T1078, T1098, T1496, T1562.008).",
+            "title": "Lab Stage 7 - AWS IAM escalation and suspicious cloud activity",
+            "description": "An AWS IAM user performed multiple suspicious actions including account creation, policy attachment, or disabling CloudTrail. Stage 7 of the Lab attack chain (T1078, T1098, T1496, T1562.008).",
             "severity": "high",
             "category": "Impact",
             "mitreTechniques": ["T1078", "T1098", "T1496", "T1562.008"],
@@ -180,7 +180,7 @@
     }
 },
 {
-    "displayName": "PoCaaS  Stage 8 AWS Backdoor Account Login from Creator IP",
+    "displayName": "Lab  Stage 8 AWS Backdoor Account Login from Creator IP",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "let account_creations = AWSCloudTrail\n| where TimeGenerated > ago(2h)\n| where EventName == \"CreateUser\"\n| extend CreatedUser = tostring(parse_json(RequestParameters).userName)\n| project CreationTime = TimeGenerated, CreatorUser = UserIdentityUserName, CreatedUser, CreatorIP = SourceIpAddress, UserIdentityArn;\nlet new_user_logins = AWSCloudTrail\n| where TimeGenerated > ago(2h)\n| where EventName == \"ConsoleLogin\"\n| where tostring(parse_json(ResponseElements).ConsoleLogin) == \"Success\"\n| project LoginTime = TimeGenerated, LoginUser = UserIdentityUserName, LoginIP = SourceIpAddress;\naccount_creations\n| join kind=inner new_user_logins on $left.CreatedUser == $right.LoginUser\n| where LoginIP == CreatorIP\n| where LoginTime > CreationTime\n| project\n    CreationTime,\n    LoginTime,\n    CreatorUser,\n    CreatedUser,\n    SharedIP = CreatorIP,\n    UserIdentityArn\n| extend\n    TimeGenerated = LoginTime,\n    AccountUpn = strcat(CreatedUser, \"@pkwork.onmicrosoft.com\"),\n    RemoteIP = SharedIP,\n    ReportId = tostring(hash_sha256(strcat(CreatorUser, CreatedUser, SharedIP, tostring(LoginTime))))"
@@ -190,8 +190,8 @@
     },
     "detectionAction": {
         "alertTemplate": {
-            "title": "PoCaaS Stage 8 - AWS backdoor account logged in from creator IP",
-            "description": "A newly created IAM user logged into the AWS console from the same IP address used by the account that created it. This is a strong indicator of persistence via a backdoor account. Stage 8 of the PoCaaS attack chain (T1136.003, T1078.004).",
+            "title": "Lab Stage 8 - AWS backdoor account logged in from creator IP",
+            "description": "A newly created IAM user logged into the AWS console from the same IP address used by the account that created it. This is a strong indicator of persistence via a backdoor account. Stage 8 of the Lab attack chain (T1136.003, T1078.004).",
             "severity": "high",
             "category": "Persistence",
             "mitreTechniques": ["T1136.003", "T1078.004"],
@@ -208,7 +208,7 @@
     }
 },
 {
-    "displayName": "PoCaaS  Stage 9 GCP IAM Privilege Escalation and Resource Abuse",
+    "displayName": "Lab  Stage 9 GCP IAM Privilege Escalation and Resource Abuse",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "let suspicious_methods = dynamic([\n    \"google.iam.admin.v1.CreateServiceAccount\",\n    \"google.iam.admin.v1.CreateServiceAccountKey\",\n    \"SetIamPolicy\",\n    \"v1.compute.firewalls.insert\",\n    \"v1.compute.instances.insert\",\n    \"google.logging.v2.ConfigServiceV2.DeleteSink\",\n    \"google.logging.v2.ConfigServiceV2.UpdateSink\"\n]);\nGCPAuditLogs\n| where TimeGenerated > ago(2h)\n| where MethodName in (suspicious_methods) or MethodName has_any (\"SetIamPolicy\", \"DeleteSink\", \"UpdateSink\")\n| extend CallerIp = tostring(parse_json(RequestMetadata).callerIp)\n| where CallerIp !startswith \"10.\" and CallerIp !startswith \"192.168.\"\n| summarize\n    EventSequence = make_set(MethodName),\n    EventCount = count(),\n    FirstEvent = min(TimeGenerated),\n    LastEvent = max(TimeGenerated),\n    SourceIPs = make_set(CallerIp),\n    TargetResources = make_set(GCPResourceName)\n    by PrincipalEmail, ProjectId\n| where EventCount >= 3\n| where set_has_element(EventSequence, \"google.iam.admin.v1.CreateServiceAccount\") or set_has_element(EventSequence, \"SetIamPolicy\") or EventSequence has \"DeleteSink\" or EventSequence has \"UpdateSink\"\n| extend DurationMin = datetime_diff('minute', LastEvent, FirstEvent)\n| project\n    FirstEvent,\n    LastEvent,\n    DurationMin,\n    PrincipalEmail,\n    ProjectId,\n    EventSequence,\n    EventCount,\n    SourceIPs,\n    TargetResources\n| extend\n    TimeGenerated = FirstEvent,\n    AccountUpn = PrincipalEmail,\n    RemoteIP = tostring(SourceIPs[0]),\n    ReportId = tostring(hash_sha256(strcat(PrincipalEmail, ProjectId, tostring(EventCount), tostring(FirstEvent))))"
@@ -218,8 +218,8 @@
     },
     "detectionAction": {
         "alertTemplate": {
-            "title": "PoCaaS Stage 9 - GCP IAM privilege escalation and resource abuse",
-            "description": "A GCP principal created service accounts, modified IAM policies, opened firewall rules, spun up compute instances, or disabled logging sinks from an external IP. Stage 9 of the PoCaaS attack chain (T1136.003, T1098, T1496, T1562.008).",
+            "title": "Lab Stage 9 - GCP IAM privilege escalation and resource abuse",
+            "description": "A GCP principal created service accounts, modified IAM policies, opened firewall rules, spun up compute instances, or disabled logging sinks from an external IP. Stage 9 of the Lab attack chain (T1136.003, T1098, T1496, T1562.008).",
             "severity": "high",
             "category": "PrivilegeEscalation",
             "mitreTechniques": ["T1136.003", "T1098", "T1496", "T1562.008"],
@@ -236,7 +236,7 @@
     }
 },
 {
-    "displayName": "PoCaaS  Stage 10 Phishing Emails Bypassing MailGuard365",
+    "displayName": "Lab  Stage 10 Phishing Emails Bypassing MailGuard365",
     "isEnabled": true,
     "queryCondition": {
         "queryText": "MailGuard365_Threats_CL\n| where TimeGenerated > ago(1h)\n| where ThreatVerdict == \"Phishing\" and Action == \"Allow\"\n| where toint(ThreatConfidence) >= 80\n| extend SenderDomainLower = tolower(SenderDomain)\n| summarize\n    PhishCount = count(),\n    Subjects = make_set(Subject),\n    TargetRecipients = make_set(RecipientAddress),\n    SenderAddresses = make_set(SenderAddress),\n    SenderIPs = make_set(SenderIP),\n    AvgConfidence = avg(toint(ThreatConfidence)),\n    MaliciousUrls = make_set(Urls),\n    MaliciousAttachments = make_set(AttachmentName),\n    FirstSeen = min(TimeGenerated),\n    LastSeen = max(TimeGenerated)\n    by SenderDomainLower\n| where PhishCount >= 2\n| project\n    FirstSeen,\n    LastSeen,\n    SenderDomainLower,\n    PhishCount,\n    AvgConfidence,\n    SenderAddresses,\n    SenderIPs,\n    TargetRecipients,\n    Subjects,\n    MaliciousUrls,\n    MaliciousAttachments\n| extend\n    TimeGenerated = FirstSeen,\n    AccountUpn = tostring(TargetRecipients[0]),\n    RemoteIP = tostring(SenderIPs[0]),\n    ReportId = tostring(hash_sha256(strcat(SenderDomainLower, tostring(PhishCount), tostring(FirstSeen))))"
@@ -246,8 +246,8 @@
     },
     "detectionAction": {
         "alertTemplate": {
-            "title": "PoCaaS Stage 10 - Phishing campaign bypassed MailGuard365 email filtering",
-            "description": "Multiple phishing emails from the same sender domain were allowed through to recipient mailboxes despite high-confidence phishing verdicts from MailGuard365. Stage 10 of the PoCaaS attack chain (T1566.001, T1566.002).",
+            "title": "Lab Stage 10 - Phishing campaign bypassed MailGuard365 email filtering",
+            "description": "Multiple phishing emails from the same sender domain were allowed through to recipient mailboxes despite high-confidence phishing verdicts from MailGuard365. Stage 10 of the Lab attack chain (T1566.001, T1566.002).",
             "severity": "high",
             "category": "InitialAccess",
             "mitreTechniques": ["T1566.001", "T1566.002"],
@@ -265,7 +265,7 @@
 },
 {
     "displayName": "[E1] [Threat Intel] IOC Match Across Sources",
-    "description": "EXERCISE: Cross-source threat intelligence correlation. This rule matches known IOC IP addresses and file hashes from the PoCaaS attack scenario against all five data sources using a union query. Students should review the TI indicators in threat-intelligence/indicators.json and understand how IOC matching works across heterogeneous log formats.",
+    "description": "EXERCISE: Cross-source threat intelligence correlation. This rule matches known IOC IP addresses and file hashes from the Lab attack scenario against all five data sources using a union query. Students should review the TI indicators in threat-intelligence/indicators.json and understand how IOC matching works across heterogeneous log formats.",
     "isEnabled": false,
     "queryCondition": {
         "queryText": "let ioc_ips = dynamic([\"198.51.100.42\", \"203.0.113.77\", \"192.0.2.100\"]);\nlet ioc_hashes = dynamic([\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"]);\nunion\n    (CommonSecurityLog\n    | where TimeGenerated > ago(4h)\n    | where DeviceVendor == \"Palo Alto Networks\"\n    | where SourceIP in (ioc_ips) or DestinationIP in (ioc_ips)\n    | extend MatchedIOC = iff(DestinationIP in (ioc_ips), DestinationIP, SourceIP)\n    | project TimeGenerated, DataSource = \"PaloAlto\", MatchedIOC, IOCType = \"ip\", Activity, SourceUserName, SourceHostName),\n    (AWSCloudTrail\n    | where TimeGenerated > ago(4h)\n    | where SourceIpAddress in (ioc_ips)\n    | project TimeGenerated, DataSource = \"AWS\", MatchedIOC = SourceIpAddress, IOCType = \"ip\", Activity = EventName, SourceUserName = UserIdentityUserName, SourceHostName = \"\"),\n    (OktaV2_CL\n    | where TimeGenerated > ago(4h)\n    | where SrcIpAddr in (ioc_ips)\n    | project TimeGenerated, DataSource = \"Okta\", MatchedIOC = SrcIpAddr, IOCType = \"ip\", Activity = EventOriginalType, SourceUserName = ActorUsername, SourceHostName = \"\"),\n    (MailGuard365_Threats_CL\n    | where TimeGenerated > ago(4h)\n    | where SenderIP in (ioc_ips)\n    | project TimeGenerated, DataSource = \"MailGuard\", MatchedIOC = SenderIP, IOCType = \"ip\", Activity = \"Phishing Email\", SourceUserName = RecipientAddress, SourceHostName = \"\"),\n    (CrowdStrikeDetections\n    | where TimeGenerated > ago(4h)\n    | where Sha256 in (ioc_hashes) or tostring(Device.external_ip) in (ioc_ips)\n    | extend MatchedIOC = iff(Sha256 in (ioc_hashes), Sha256, tostring(Device.external_ip))\n    | extend IOCType = iff(Sha256 in (ioc_hashes), \"hash\", \"ip\")\n    | project TimeGenerated, DataSource = \"CrowdStrike\", MatchedIOC, IOCType, Activity = Name, SourceUserName = SourceAccountUpn, SourceHostName = tostring(Device.hostname))\n| extend\n    AccountUpn = SourceUserName,\n    DeviceName = SourceHostName,\n    RemoteIP = iff(IOCType == \"ip\", MatchedIOC, \"\"),\n    SHA256 = iff(IOCType == \"hash\", MatchedIOC, \"\"),\n    ReportId = tostring(hash_sha256(strcat(DataSource, MatchedIOC, tostring(TimeGenerated))))"
@@ -274,11 +274,11 @@
     "detectionAction": {
         "alertTemplate": {
             "title": "IOC match in {{DataSource}} — {{MatchedIOC}} [Threat Intel]",
-            "description": "A known indicator of compromise (IP address or file hash) from the PoCaaS threat intelligence feed was observed in one or more data sources.",
+            "description": "A known indicator of compromise (IP address or file hash) from the Lab threat intelligence feed was observed in one or more data sources.",
             "severity": "high",
             "category": "InitialAccess",
             "mitreTechniques": ["T1566"],
-            "recommendedActions": "Investigate the matched IOC. Determine the source and scope of exposure. Cross-reference with the attack timeline in the PoCaaS scenario.",
+            "recommendedActions": "Investigate the matched IOC. Determine the source and scope of exposure. Cross-reference with the attack timeline in the Lab scenario.",
             "impactedAssets": [
                 { "@odata.type": "#microsoft.graph.security.impactedUserAsset", "identifier": "accountUpn" }
             ]

@@ -13,7 +13,7 @@ Learn how to detect network reconnaissance by aggregating firewall deny logs and
 
 ## Background
 
-Port scanning is one of the most common reconnaissance techniques (MITRE T1046). Attackers probe destination hosts across many ports to discover open services. In the PoCaaS scenario, the attacker scans the internal network after establishing a C2 channel, looking for lateral movement targets.
+Port scanning is one of the most common reconnaissance techniques (MITRE T1046). Attackers probe destination hosts across many ports to discover open services. In the Lab scenario, the attacker scans the internal network after establishing a C2 channel, looking for lateral movement targets.
 
 Palo Alto firewalls log denied connections with the action `drop`, `deny`, or `reset-both`. When traffic has an `incomplete` application protocol, it indicates the session never completed — a strong indicator of scanning rather than legitimate traffic.
 

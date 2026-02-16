@@ -1,2 +1,5 @@
 # Generated DCR templates (contain subscription-specific data)
 Training/Azure-Sentinel-Training-Lab/Artifacts/DCRTemplates/
+
+# Local reference docs (not part of the lab)
+CORRELATION_GUIDE.md

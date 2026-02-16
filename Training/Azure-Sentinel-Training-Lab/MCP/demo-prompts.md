@@ -1,6 +1,6 @@
 # Sentinel MCP Server — Demo Prompts
 
-These prompts are designed for Solutions Engineers to demonstrate the Microsoft Sentinel MCP Server capabilities during customer PoCs. Each prompt showcases a different MCP capability and maps to the PoCaaS attack scenario data.
+These prompts are designed for Solutions Engineers to demonstrate the Microsoft Sentinel MCP Server capabilities during customer PoCs. Each prompt showcases a different MCP capability and maps to the Lab attack scenario data.
 
 > **Tip:** Paste these prompts directly into GitHub Copilot Chat (or any MCP-enabled AI assistant) with the Sentinel MCP server connected. The AI will call the appropriate MCP tools automatically.
 
