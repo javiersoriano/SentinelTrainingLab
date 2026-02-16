@@ -8,10 +8,17 @@
     rule by POSTing to:
         POST https://graph.microsoft.com/beta/security/rules/detectionRules
 
-    The script authenticates using a User-Assigned Managed Identity (UAMI)
-    that must already have the CustomDetection.ReadWrite.All Graph permission.
-    The UAMI client ID is read from an Automation Variable set by the ARM
-    template, or can be passed as a parameter.
+    The script supports two authentication methods:
+      1. User-Assigned Managed Identity (UAMI) — default for Azure Automation.
+      2. Service Principal (SPN) — for running outside Azure or in pipelines.
+
+    The identity used must have the CustomDetection.ReadWrite.All application
+    permission (admin-consented) on Microsoft Graph.
+
+    Authentication selection:
+      - If TenantId + ClientId + ClientSecret are provided, SPN auth is used.
+      - Otherwise, Managed Identity auth is used (requires ManagedIdentityClientId
+        or the Automation Variable 'DetectionRulesManagedIdentityClientId').
 
     Existing rules whose displayName already matches are skipped to keep the
     operation idempotent.
@@ -22,6 +29,16 @@
 .PARAMETER ManagedIdentityClientId
     Client ID of the User-Assigned Managed Identity. If omitted, the script
     reads it from the Automation Variable 'DetectionRulesManagedIdentityClientId'.
+    Ignored when SPN parameters are provided.
+
+.PARAMETER TenantId
+    Microsoft Entra tenant ID for service principal authentication.
+
+.PARAMETER ClientId
+    Application (client) ID of the service principal.
+
+.PARAMETER ClientSecret
+    Client secret of the service principal.
 
 .PARAMETER RepoZipUrl
     URL of the repository zip archive. Defaults to the master branch.
@@ -34,6 +51,9 @@
 #>
 param(
     [string]$ManagedIdentityClientId,
+    [string]$TenantId,
+    [string]$ClientId,
+    [string]$ClientSecret,
     [string]$RepoZipUrl     = "https://github.com/kapetanios55/SentinelTrainingDemo/archive/refs/heads/master.zip",
     [string]$RepoRootName   = "SentinelTrainingDemo-master",
     [string]$RulesRelativePath = "Training/Azure-Sentinel-Training-Lab/Artifacts/DetectionRules/rules.json"
@@ -41,22 +61,32 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# ── Resolve UAMI client ID ──────────────────────────────────────────────────
-if (-not $ManagedIdentityClientId) {
-    try {
-        $raw = Get-AutomationVariable -Name 'DetectionRulesManagedIdentityClientId'
-        $ManagedIdentityClientId = $raw.Trim().Trim('"')
-    }
-    catch {
-        throw "ManagedIdentityClientId not provided and Automation Variable 'DetectionRulesManagedIdentityClientId' not found."
-    }
-}
-
-Write-Output "Using Managed Identity Client ID: $ManagedIdentityClientId"
-
-# ── Authenticate with User-Assigned Managed Identity ─────────────────────────
+# ── Authenticate ─────────────────────────────────────────────────────────────
 Import-Module Az.Accounts -ErrorAction Stop
-Connect-AzAccount -Identity -AccountId $ManagedIdentityClientId | Out-Null
+
+$useSpn = $TenantId -and $ClientId -and $ClientSecret
+
+if ($useSpn) {
+    # ── Service Principal authentication ─────────────────────────────────────
+    Write-Output "Authenticating with Service Principal (ClientId: $ClientId)"
+    $secureSecret = ConvertTo-SecureString $ClientSecret -AsPlainText -Force
+    $credential   = New-Object System.Management.Automation.PSCredential($ClientId, $secureSecret)
+    Connect-AzAccount -ServicePrincipal -TenantId $TenantId -Credential $credential | Out-Null
+}
+else {
+    # ── Managed Identity authentication ──────────────────────────────────────
+    if (-not $ManagedIdentityClientId) {
+        try {
+            $raw = Get-AutomationVariable -Name 'DetectionRulesManagedIdentityClientId'
+            $ManagedIdentityClientId = $raw.Trim().Trim('"')
+        }
+        catch {
+            throw "No authentication method available. Provide TenantId + ClientId + ClientSecret for SPN auth, or ManagedIdentityClientId (or set Automation Variable 'DetectionRulesManagedIdentityClientId') for Managed Identity auth."
+        }
+    }
+    Write-Output "Authenticating with Managed Identity (ClientId: $ManagedIdentityClientId)"
+    Connect-AzAccount -Identity -AccountId $ManagedIdentityClientId | Out-Null
+}
 
 # Acquire a token for Microsoft Graph
 $graphToken = (Get-AzAccessToken -ResourceUrl "https://graph.microsoft.com").Token
