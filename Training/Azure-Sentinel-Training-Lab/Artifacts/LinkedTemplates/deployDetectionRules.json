@@ -97,7 +97,7 @@
             ],
             "properties": {
                 "isEncrypted": false,
-                "value": "[concat('\"', reference(parameters('userAssignedIdentityResourceId'), '2023-01-31').clientId, '\"')]"
+                "value": "[if(variables('useManagedIdentity'), concat('\"', reference(parameters('userAssignedIdentityResourceId'), '2023-01-31').clientId, '\"'), '\"\"')]"
             }
         },
         {
