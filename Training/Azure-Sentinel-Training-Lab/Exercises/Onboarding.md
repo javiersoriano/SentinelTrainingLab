@@ -123,15 +123,19 @@ You should see Azure Activity events flowing into the workspace.
 
 Now that your workspace is ready, deploy the Training Lab solution. This will ingest pre-recorded telemetry (~20 MB) and create several artifacts (analytics rules, workbooks, watchlists, playbooks) used in the subsequent exercises.
 
-Make sure you have completed all the setup from the [README](../README.md) — including the **Custom Detection Rules Setup** (UAMI with `CustomDetection.ReadWrite.All` permission). You will need the UAMI's full resource ID during deployment.
+Make sure you have completed all the setup from the [README](../README.md) — including the **Custom Detection Rules Setup** (either Option A — UAMI or Option B — Service Principal with `CustomDetection.ReadWrite.All` permission). You will need the credentials from your chosen option during deployment.
 
 Click the button below to deploy directly into your Azure subscription:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fkapetanios55%2FSentinelTrainingDemo%2Fmaster%2FTraining%2FAzure-Sentinel-Training-Lab%2FPackage%2FmainTemplate.json)
 
 1. In the deployment form, select the **Subscription**, **Resource Group**, and **Workspace** from the previous exercises.
-2. Optionally review the different tabs (Workbooks, Analytics, Hunting Queries, Watchlists, Playbooks).
-3. Select **Review + create**, then **Create**.
+2. Under **Detection Rules Auth Method**, choose your preferred option:
+   - **User-Assigned Managed Identity** — paste the UAMI's full resource ID.
+   - **Service Principal (App Registration)** — enter the Tenant ID, Client ID, and Client Secret.
+   - **None** — skip custom detection rules deployment.
+3. Optionally review the different tabs (Workbooks, Analytics, Hunting Queries, Watchlists, Playbooks).
+4. Select **Review + create**, then **Create**.
 
 > **Note:** The deployment takes approximately **15 minutes**. This includes ingesting all the pre-recorded data so it's ready when deployment finishes.
 

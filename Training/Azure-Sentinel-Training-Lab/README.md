@@ -20,11 +20,17 @@ Before you begin, make sure you have:
 
 ## Custom Detection Rules Setup
 
-This lab deploys **custom detection rules** to Microsoft Defender XDR via the Microsoft Graph Security API. This requires a **User-Assigned Managed Identity (UAMI)** with the `CustomDetection.ReadWrite.All` Microsoft Graph application permission, created **before** deploying the template.
+This lab deploys **custom detection rules** to Microsoft Defender XDR via the Microsoft Graph Security API. The Automation runbook that creates the rules needs an identity with the `CustomDetection.ReadWrite.All` Microsoft Graph application permission. You can use **either** a User-Assigned Managed Identity (UAMI) **or** a Service Principal (App Registration) — pick the option that suits your environment.
 
-Complete the following steps before deployment.
+> **Tip:** Leave all identity fields empty during deployment if you want to skip custom detection rules entirely.
 
-#### 1. Create the User-Assigned Managed Identity
+Complete **one** of the two options below before deployment.
+
+---
+
+### Option A — User-Assigned Managed Identity (UAMI)
+
+#### A1. Create the UAMI
 
 ```powershell
 # Create the UAMI (adjust resource group and name as needed)
@@ -33,7 +39,7 @@ az identity create `
   --name SentinelDetectionRulesIdentity
 ```
 
-#### 2. Grant the Microsoft Graph permission
+#### A2. Grant the Microsoft Graph permission
 
 ```powershell
 # Variables
@@ -51,13 +57,66 @@ az rest --method POST `
   --body "{\"principalId\":\"$miObjectId\",\"resourceId\":\"$graphSpId\",\"appRoleId\":\"$appRoleId\"}"
 ```
 
-#### 3. Deploy the template
+#### A3. Deploy
 
-Pass the UAMI's **full resource ID** as the `detectionRulesIdentityResourceId` parameter when deploying (in the [Onboarding Exercise 8](./Exercises/Onboarding.md#exercise-8-deploy-the-microsoft-sentinel-training-lab-solution)):
+Pass the UAMI's **full resource ID** as the `detectionRulesIdentityResourceId` parameter when deploying (in [Onboarding Exercise 8](./Exercises/Onboarding.md#exercise-8-deploy-the-microsoft-sentinel-training-lab-solution)):
 
 ```
 /subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/SentinelDetectionRulesIdentity
 ```
+
+---
+
+### Option B — Service Principal (App Registration)
+
+Use this option when you cannot create or use a Managed Identity (e.g., cross-tenant deployments or restricted RBAC environments).
+
+#### B1. Create an App Registration
+
+```powershell
+# Create the app registration
+az ad app create --display-name SentinelDetectionRulesSPN
+
+# Note the appId (client ID) from the output
+$appId = (az ad app list --display-name SentinelDetectionRulesSPN --query "[0].appId" -o tsv)
+
+# Create a service principal for the app
+az ad sp create --id $appId
+```
+
+#### B2. Grant the Microsoft Graph permission
+
+```powershell
+$spObjectId   = (az ad sp show --id $appId --query id -o tsv)
+$graphAppId   = "00000003-0000-0000-c000-000000000000"   # Microsoft Graph
+$appRoleId    = "e0fd9c8d-a12e-4cc9-9827-20c8c3cd6fb8"   # CustomDetection.ReadWrite.All
+
+$graphSpId = (az ad sp show --id $graphAppId --query id -o tsv)
+
+az rest --method POST `
+  --uri "https://graph.microsoft.com/v1.0/servicePrincipals/$graphSpId/appRoleAssignedTo" `
+  --headers "Content-Type=application/json" `
+  --body "{\"principalId\":\"$spObjectId\",\"resourceId\":\"$graphSpId\",\"appRoleId\":\"$appRoleId\"}"
+```
+
+> **Note:** Granting application permissions requires **Global Administrator** or **Privileged Role Administrator** in Microsoft Entra ID, or admin consent must be granted afterwards.
+
+#### B3. Create a client secret
+
+```powershell
+az ad app credential reset --id $appId --append
+# Save the "password" value — it will not be shown again.
+```
+
+#### B4. Deploy
+
+During deployment, provide the following three parameters (leave the UAMI field empty):
+
+| Parameter | Value |
+|---|---|
+| `detectionRulesSpnTenantId` | Your Microsoft Entra **Tenant ID** |
+| `detectionRulesSpnClientId` | The **Application (client) ID** from step B1 |
+| `detectionRulesSpnClientSecret` | The **client secret** from step B3 |
 
 ## Getting started
 
