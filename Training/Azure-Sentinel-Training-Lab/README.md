@@ -71,7 +71,7 @@ Pass the UAMI's **full resource ID** as the `detectionRulesIdentityResourceId` p
 
 Use this option when you cannot create or use a Managed Identity (e.g., cross-tenant deployments or restricted RBAC environments).
 
-> **Prefer the portal?** You can complete steps B1–B3 entirely from the Azure portal by following [Create a Microsoft Entra app and service principal in the portal](https://learn.microsoft.com/entra/identity-platform/howto-create-service-principal-portal). That guide covers app registration, API permission assignment (use **Microsoft Graph → Application permissions → CustomDetection.ReadWrite.All**), and client secret creation. Once done, skip ahead to **B4** below.
+**Prefer the portal?** You can complete steps B1–B3 entirely from the Azure portal by following [Create a Microsoft Entra app and service principal in the portal](https://learn.microsoft.com/entra/identity-platform/howto-create-service-principal-portal). That guide covers app registration, API permission assignment (use **Microsoft Graph → Application permissions → CustomDetection.ReadWrite.All**), and client secret creation. Once done, skip ahead to **B4** below.
 
 <p align="center">
 <img src="./Images/OnboardingImage8.png?raw=true">
