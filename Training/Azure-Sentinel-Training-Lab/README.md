@@ -151,6 +151,8 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 [**Exercise 8 — Table Management: Tiers & Retention**](./Exercises/E8_table_management.md)
 
+[**Exercise 9 — Sentinel MCP Server Demo Prompts**](./Exercises/E9_MCP.md)
+
 ---
 
 ## Reference
