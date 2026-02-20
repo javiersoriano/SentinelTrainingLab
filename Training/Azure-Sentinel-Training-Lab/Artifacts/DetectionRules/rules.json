@@ -337,6 +337,31 @@
     }
 },
 {
+    "displayName": "[S8] [Palo Alto] Data Lake Promoted Threat",
+    "description": "Detects promoted threat intelligence from the Sentinel data lake KQL job output table. The PaloAlto_ThreatSummary_KQL_CL table is populated by the scheduled KQL job (datalake/kql_job_firewall_threats.json) that aggregates firewall threat and traffic data from the data lake tier. Demonstrates the data-lake-to-analytics promotion detection pattern.",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "PaloAlto_ThreatSummary_KQL_CL\n| where TimeGenerated > ago(4h)\n| where TotalSessions > 5\n    or set_has_element(todynamic(ThreatCategories), \"spyware\")\n    or set_has_element(todynamic(ThreatCategories), \"wildfire-virus\")\n    or tolong(TotalBytesSent) > 50000000\n| project\n    TimeGenerated,\n    SourceIP,\n    DestinationIP,\n    TotalSessions,\n    TotalBytesSent,\n    TotalBytesReceived,\n    ThreatCategories,\n    TopActions,\n    DistinctPorts,\n    FirstSeen,\n    LastSeen,\n    SourceUserName,\n    SourceHostName\n| extend\n    AccountUpn = SourceUserName,\n    DeviceName = SourceHostName,\n    RemoteIP = DestinationIP,\n    ReportId = tostring(hash_sha256(strcat(SourceIP, DestinationIP, tostring(TotalSessions))))"
+    },
+    "schedule": { "period": "3H" },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "Promoted threat summary — {{SourceIP}} to {{DestinationIP}} [Palo Alto + Data Lake]",
+            "description": "The data lake KQL job identified suspicious aggregated firewall activity including threat categories or high-volume transfers. This alert is generated from promoted data lake intelligence.",
+            "severity": "medium",
+            "category": "CommandAndControl",
+            "mitreTechniques": ["T1071.001"],
+            "recommendedActions": "Review the threat categories and high-volume transfers. Investigate the source and destination IPs. Check the Palo Alto investigation notebook for detailed analysis.",
+            "impactedAssets": [
+                { "@odata.type": "#microsoft.graph.security.impactedDeviceAsset", "identifier": "deviceName" },
+                { "@odata.type": "#microsoft.graph.security.impactedUserAsset", "identifier": "accountUpn" }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+},
+{
     "displayName": "Lab [E4] [AWS] Console Login Without MFA",
     "description": "EXERCISE: Detect AWS console logins without MFA, enriched with a watchlist join. Students should create a BusinessCriticalAWS watchlist CSV (columns: EventSource, ServiceName, Criticality) and modify the query to join _GetWatchlist('BusinessCriticalAWS') to flag whether the login affected a critical AWS service. This demonstrates watchlist integration in custom detections.",
     "isEnabled": false,
