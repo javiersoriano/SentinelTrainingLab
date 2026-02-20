@@ -1,4 +1,28 @@
-# Exercise 10 — Data Lake Notebooks
+{
+    "displayName": "[S1] [MailGuard] Phishing Email Delivered",
+    "description": "Detects phishing emails that passed through MailGuard SEG and were delivered to an internal recipient. Maps Mailbox, Account, IP, URL, and File entities for the incident graph.",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "SEG_MailGuard_CL\n| where TimeGenerated > ago(4h)\n| where ThreatVerdict in (\"Phishing\", \"Malicious\")\n| where Action == \"Allow\"\n| where Direction == \"Inbound\"\n| project\n    TimeGenerated,\n    Subject,\n    SenderAddress,\n    SenderDomain,\n    SenderIP,\n    RecipientAddress,\n    ThreatVerdict,\n    ThreatConfidence,\n    SPFResult,\n    DKIMResult,\n    DMARCResult,\n    Urls,\n    AttachmentName,\n    AttachmentSHA256\n| extend\n    AccountUpn = RecipientAddress,\n    RecipientEmailAddress = RecipientAddress,\n    RemoteIP = SenderIP,\n    FileName = AttachmentName,\n    SHA256 = AttachmentSHA256,\n    RemoteUrl = tostring(parse_json(Urls)[0]),\n    ReportId = tostring(hash_sha256(strcat(tostring(TimeGenerated), SenderAddress, RecipientAddress)))"
+    },
+    "schedule": { "period": "1H" },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "Phishing email delivered to {{RecipientAddress}} [MailGuard]",
+            "description": "A phishing or malicious email was allowed through the MailGuard SEG to an internal recipient (T1566.001 / T1566.002). SPF/DKIM/DMARC results and threat verdict are available for investigation.",
+            "severity": "medium",
+            "category": "InitialAccess",
+            "mitreTechniques": ["T1566.001", "T1566.002"],
+            "recommendedActions": "Search for the email in user mailboxes. Remove the email. Check if the user clicked any links or opened attachments. Block the sender domain.",
+            "impactedAssets": [
+                { "@odata.type": "#microsoft.graph.security.impactedMailboxAsset", "identifier": "recipientEmailAddress" },
+                { "@odata.type": "#microsoft.graph.security.impactedUserAsset", "identifier": "accountUpn" }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+}# Exercise 10 — Data Lake Notebooks
 
 In this exercise you will use **Jupyter notebooks** to perform an interactive security investigation against the Microsoft Sentinel data lake. Notebooks combine code, visualisations, and narrative in a single document — making them ideal for deep-dive threat hunting, repeatable analysis, and sharing findings with your SOC team.
 
