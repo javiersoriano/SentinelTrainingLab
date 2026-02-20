@@ -147,6 +147,8 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 [**Exercise 6 — Device Isolation Response**](./Exercises/E6_device_isolation_response.md)
 
+[**Exercise 7 — Data Lake KQL Jobs**](./Exercises/E7_datalake_kql_jobs.md)
+
 ---
 
 ## Reference
