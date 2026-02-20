@@ -149,6 +149,8 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 [**Exercise 7 — Data Lake KQL Jobs**](./Exercises/E7_datalake_kql_jobs.md)
 
+[**Exercise 8 — Table Management: Tiers & Retention**](./Exercises/E8_table_management.md)
+
 ---
 
 ## Reference
