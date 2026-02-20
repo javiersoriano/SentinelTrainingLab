@@ -66,7 +66,7 @@ There are two ways to access KQL jobs:
 4. You will see the jobs management page listing any existing KQL jobs
 
 <p align="center">
-<img src="./Images/OnboardingImage10.png?raw=true">
+<img src="../Images/OnboardingImage10.png?raw=true">
 </p>
 
 **Option B — From the KQL query editor:**
@@ -77,7 +77,7 @@ There are two ways to access KQL jobs:
 4. Select the **Create job** button in the upper right corner of the query editor
 
 <p align="center">
-<img src="./Images/OnboardingImage11.png?raw=true">
+<img src="../Images/OnboardingImage11.png?raw=true">
 </p>
 
 ---
@@ -98,7 +98,7 @@ There are two ways to access KQL jobs:
 3. Select **Next**
 
 <p align="center">
-<img src="./Images/OnboardingImage9.png?raw=true">
+<img src="../Images/OnboardingImage9.png?raw=true">
 </p>
 
 
@@ -163,7 +163,10 @@ CommonSecurityLog
 
 5. Select **Next**
 
-<!-- TODO: Add screenshot of the query editor with the query -->
+<p align="center">
+<img src="../Images/OnboardingImage12.png?raw=true">
+</p>
+
 
 > **Important:** The `TimeGenerated` column is overwritten by the ingestion process if it is older than two days. If you need to preserve the original event time, write it to a separate column (which we do here with `FirstSeen` and `LastSeen`).
 
@@ -185,7 +188,10 @@ On the **Schedule the query job** page:
 
 3. Select **Next**
 
-<!-- TODO: Add screenshot of the schedule configuration -->
+<p align="center">
+<img src="../Images/OnboardingImage13.png?raw=true">
+</p>
+
 
 > **Why 4 hours?** The query uses a 4-hour lookback window (`startTime = endTime - 4h`). Running the job every 4 hours ensures continuous coverage without gaps. The 15-minute delay parameter prevents querying data that hasn't been fully ingested yet.
 
@@ -203,7 +209,9 @@ On the **Schedule the query job** page:
 
 3. The job is scheduled. You can view its status by selecting the link on the confirmation page, or by navigating back to **Microsoft Sentinel** → **Data lake exploration** → **Jobs**
 
-<!-- TODO: Add screenshot of the review page -->
+<p align="center">
+<img src="../Images/OnboardingImage14.png?raw=true">
+</p>
 
 ---
 
@@ -276,7 +284,10 @@ Instead of writing queries from scratch, you can use **built-in job templates** 
 3. Select a template, review the description and query, then select **Create job from template**
 4. The job creation wizard opens with pre-populated settings — just select your destination workspace and adjust the schedule
 
-<!-- TODO: Add screenshot of the job templates page -->
+<p align="center">
+<img src="../Images/OnboardingImage15.png?raw=true">
+</p>
+
 
 ---
 
