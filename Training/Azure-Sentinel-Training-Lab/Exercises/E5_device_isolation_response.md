@@ -1,7 +1,7 @@
-# Exercise 6 — Cross-Platform Response Actions (Device Isolation)
+# Exercise 5 — Cross-Platform Response Actions (Device Isolation) - Optional - Requires a VM onboarded to MDE
 
-**Rule:** `[E6] [CrowdStrike] Device Isolation Response`
-**File:** `detections/rules/exercise6_device_isolation.json`
+**Rule:** `[E5] [CrowdStrike] Device Isolation Response`
+**File:** `detections/rules/exercise5_device_isolation.json`
 **MITRE ATT&CK:** T1204.002 (User Execution: Malicious File)
 **Difficulty:** Advanced
 
@@ -203,7 +203,7 @@ Update the rule file to add the response action:
 
 Then redeploy:
 ```
-python -m scripts.deploy_detections --rule exercise6_device_isolation.json
+python -m scripts.deploy_detections --rule exercise5_device_isolation.json
 ```
 
 > **Warning:** In a production environment, automatic device isolation is a high-impact action. Always test with a `selective` isolation type first, and scope to a test device group.

@@ -143,11 +143,11 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 [**Exercise 4 — Watchlist Integration**](./Exercises/E4_watchlist_integration.md)
 
-[**Exercise 5 — Data Lake Port Diversity**](./Exercises/E5_datalake_port_diversity.md)
+[**Exercise 5 — Device Isolation Response**](./Exercises/E5_device_isolation_response.md)
 
-[**Exercise 6 — Device Isolation Response**](./Exercises/E6_device_isolation_response.md)
+[**Exercise 6 — Data Lake KQL Jobs**](./Exercises/E6_datalake_kql_jobs.md)
 
-[**Exercise 7 — Data Lake KQL Jobs**](./Exercises/E7_datalake_kql_jobs.md)
+[**Exercise 7 — Data Lake Port Diversity**](./Exercises/E7_datalake_port_diversity.md)
 
 [**Exercise 8 — Table Management: Tiers & Retention**](./Exercises/E8_table_management.md)
 
@@ -159,7 +159,7 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 ## Reference
 
-> **Optional — Exercise 6 (Device Isolation Response):** This exercise requires a machine onboarded to **Microsoft Defender for Endpoint (MDE)**. If you plan to complete Exercise 6, onboard a test device to MDE before starting. See [Onboard devices to Microsoft Defender for Endpoint](https://learn.microsoft.com/en-us/defender-endpoint/onboarding) for instructions.
+> **Optional — Exercise 5 (Device Isolation Response):** This exercise requires a machine onboarded to **Microsoft Defender for Endpoint (MDE)**. If you plan to complete Exercise 5, onboard a test device to MDE before starting. See [Onboard devices to Microsoft Defender for Endpoint](https://learn.microsoft.com/en-us/defender-endpoint/onboarding) for instructions.
 
 ### Release notes
 

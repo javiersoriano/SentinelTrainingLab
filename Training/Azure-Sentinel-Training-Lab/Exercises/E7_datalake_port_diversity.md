@@ -1,7 +1,7 @@
-# Exercise 5 — Data Lake vs Real-Time Detection
+# Exercise 7 — Data Lake vs Real-Time Detection
 
-**Rule:** `[E5] [Palo Alto] Data Lake Port Diversity Anomaly`
-**File:** `detections/rules/exercise5_datalake_port_diversity.json`
+**Rule:** `[E7] [Palo Alto] Data Lake Port Diversity Anomaly`
+**File:** `detections/rules/exercise7_datalake_port_diversity.json`
 **MITRE ATT&CK:** T1046 (Network Service Discovery)
 **Difficulty:** Intermediate
 
