@@ -151,23 +151,7 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 ## Reference
 
-### Log ingestion (modern API)
-
-The training lab includes a script that uses the Azure Monitor Logs Ingestion API to ingest **custom tables only** (tables ending with `_CL`). Built-in tables are not ingested by this API and should be populated via their native data connectors instead.
-
-- Script: [Artifacts/Scripts/IngestCSV-LogsIngestionApi.ps1](Artifacts/Scripts/IngestCSV.ps1)
-- Telemetry folders:
-	- Custom: [Artifacts/Telemetry/Custom](Artifacts/Telemetry/Custom)
-	- Built-in: [Artifacts/Telemetry/BuiltIn](Artifacts/Telemetry/BuiltIn)
-- DCR templates output: [Artifacts/DCRTemplates](Artifacts/DCRTemplates)
-
-This script:
-- Scans the custom telemetry folder for CSV files ending in `_CL.csv`.
-- Optionally scans the built-in telemetry folder when a built-in DCR immutable ID is provided.
-- Generates a DCR template per custom table using the CSV schema.
-- Optionally deploys the DCE/DCR resources and ingests the data.
-
-See the script header for parameters and usage.
+> **Optional — Exercise 6 (Device Isolation Response):** This exercise requires a machine onboarded to **Microsoft Defender for Endpoint (MDE)**. If you plan to complete Exercise 6, onboard a test device to MDE before starting. See [Onboard devices to Microsoft Defender for Endpoint](https://learn.microsoft.com/en-us/defender-endpoint/onboarding) for instructions.
 
 ### Release notes
 
