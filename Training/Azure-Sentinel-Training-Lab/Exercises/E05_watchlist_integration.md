@@ -1,4 +1,4 @@
-# Exercise 4 — Watchlist Integration
+# Exercise 5 — Watchlist Integration
 
 **Rule:** `[E4] [AWS] Console Login Without MFA`
 **Deployed in:** `Artifacts/DetectionRules/rules.json`

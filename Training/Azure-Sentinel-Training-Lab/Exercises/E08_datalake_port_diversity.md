@@ -1,4 +1,4 @@
-# Exercise 7 — Data Lake vs Real-Time Detection
+# Exercise 8 — Data Lake vs Real-Time Detection
 
 **Rule:** `[E7] [Palo Alto] Data Lake Port Diversity Anomaly`
 **Deployed in:** `Artifacts/DetectionRules/rules.json`

@@ -1,4 +1,4 @@
-# Exercise 8 — Table Management: Tiers & Retention
+# Exercise 9 — Table Management: Tiers & Retention
 
 **Topic:** Configure table tiers, retention settings, and understand cost implications  
 **Difficulty:** Beginner  
