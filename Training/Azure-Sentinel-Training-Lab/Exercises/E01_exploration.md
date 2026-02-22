@@ -1,4 +1,4 @@
-# Exploring the environment
+# Exercise 1 - Exploring the environment
 
 This exercise is about exploring the environment after data ingestion and alert rule creation. 
 
@@ -10,13 +10,12 @@ This exercise is about exploring the environment after data ingestion and alert 
 2. [The Incident — Attack Walk-through](#2-the-incident--attack-walk-through)
 3. [Hunting & KQL](#5-hunting--kql)
 4. [Sentinel Graph & Investigation](#6-sentinel-graph--investigation)
-5. [Data Lake Exploration](#7-data-lake-exploration)
 
 ---
 
 ## 1. Introduction & Portal Orientation
 
-### What is PoCaaS?
+### What is included in this lab?
 
 PoCaaS (Proof of Concept as a Service) provides a fully configured Microsoft Sentinel environment with realistic security data, pre-built detections, and a multi-stage attack scenario. The goal is to experience Sentinel's capabilities firsthand — investigating a real incident, exploring data sources, building detections, and configuring automation.
 
@@ -228,19 +227,13 @@ These hidden activities are intentionally undetected — they represent the gaps
 
 ## 4. Analytics & Detection Engineering
 
-### Content Hub Analytics Rules
-
-When you installed a Content Hub solution earlier, it may have deployed analytics rules alongside the data connector. These are pre-built detections maintained by Microsoft and the solution vendor.
-
-Navigate to **Microsoft Sentinel → Configuration → Analytics** to see all configured rules — both pre-built and custom.
-
 ### MITRE ATT&CK Dashboard
 
 Navigate to **Microsoft Sentinel → Threat Management → MITRE ATT&CK**.
 
 This dashboard provides a matrix view of your detection coverage mapped to the MITRE ATT&CK framework. Each cell represents a technique, colour-coded by the number of active detection rules covering it. Gaps in the matrix represent techniques with no active detections — these are your coverage blind spots.
 
-In the PoCaaS environment, you should see coverage across Initial Access, Execution, Credential Access, Lateral Movement, Command & Control, Exfiltration, and Impact. However, techniques like Discovery (T1046 — port scanning) and Persistence may show gaps — these are covered by the disabled exercise rules, which you can enable after building them.
+In this environment, you should see coverage across Initial Access, Execution, Credential Access, Lateral Movement, Command & Control, Exfiltration, and Impact. However, techniques like Discovery (T1046 — port scanning) and Persistence may show gaps — these are covered by the disabled exercise rules, which you can enable after building them.
 
 ### Custom Detection Rules
 
