@@ -174,7 +174,6 @@ Now reverse the change to restore real-time capabilities:
 <img src="../Images/OnboardingImage20.png?raw=true">
 </p>
 
-
 ---
 
 ### Step 6 — Understand the Impact on Detections
