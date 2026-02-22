@@ -57,7 +57,7 @@ For this exercise, **Medium** is recommended.
 
 ## Step 4 — Run the Analysis
 
-The notebook walks you through a complete Palo Alto firewall investigation in 12 steps. Run each cell in order — the markdown cells explain what each analysis does, and the code cells produce the results.
+The notebook walks you through a complete Palo Alto firewall investigation in 12 steps. **Run each cell in order** — the markdown cells explain what each analysis does, and the code cells produce the results.
 
 ### What the Notebook Covers
 

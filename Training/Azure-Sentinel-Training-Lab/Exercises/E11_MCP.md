@@ -159,7 +159,7 @@ Additionally, **Sentinel Graph** provides unified graph analytics (attack paths,
 
 Congratulations, you have completed this exercise! You can now continue to the next exercise:
 
-- **[Exercise 12 — Creating a Custom Graph in Microsoft Sentinel](./E12_custom_graph.md)**
+- **[Exercise 12 — Sentinel Graph: Blast Radius & Hunting Graph](./E12_sentinel_graph.md)**
 
 ---
 
