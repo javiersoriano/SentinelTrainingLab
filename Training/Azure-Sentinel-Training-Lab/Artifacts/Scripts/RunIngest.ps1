@@ -7,8 +7,8 @@ param(
 
     [string]$WorkspaceName,
 
-    [string]$RepoZipUrl = "https://github.com/kapetanios55/SentinelTrainingDemo/archive/refs/heads/master.zip",
-    [string]$RepoRootName = "SentinelTrainingDemo-master"
+    [string]$RepoZipUrl = "https://github.com/javiersoriano/SentinelTrainingLab/archive/refs/heads/master.zip",
+    [string]$RepoRootName = "SentinelTrainingLab-master"
 )
 
 $ErrorActionPreference = "Stop"

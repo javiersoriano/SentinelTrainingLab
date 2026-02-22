@@ -104,7 +104,7 @@
         }
     },
     "variables": {
-        "_artifactsLocation": "https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/",
+        "_artifactsLocation": "https://raw.githubusercontent.com/javiersoriano/SentinelTrainingLab/master/Training/Azure-Sentinel-Training-Lab/",
         "sourceId": "sentineltrainingdemo.azure-sentinel-training-lab",
         "_sourceId": "[variables('sourceId')]",
         "workbookContentId": "ATLInvestigationInsights",
@@ -267,7 +267,7 @@
                                 "logProgress": true,
                                 "logVerbose": true,
                                 "publishContentLink": {
-                                    "uri": "[concat('https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/RunIngest.ps1', '?v=', parameters('scheduleName'))]"
+                                    "uri": "[concat('https://raw.githubusercontent.com/javiersoriano/SentinelTrainingLab/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/RunIngest.ps1', '?v=', parameters('scheduleName'))]"
                                 }
                             }
                         },

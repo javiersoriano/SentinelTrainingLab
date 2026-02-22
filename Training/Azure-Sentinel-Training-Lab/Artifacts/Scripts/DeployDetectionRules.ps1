@@ -56,8 +56,8 @@ param(
     [string]$TenantId,
     [string]$ClientId,
     [string]$ClientSecret,
-    [string]$RepoZipUrl     = "https://github.com/javiersoriano/SentinelTrainingDemo/archive/refs/heads/master.zip",
-    [string]$RepoRootName   = "SentinelTrainingDemo-master",
+    [string]$RepoZipUrl     = "https://github.com/javiersoriano/SentinelTrainingLab/archive/refs/heads/master.zip",
+    [string]$RepoRootName   = "SentinelTrainingLab-master",
     [string]$RulesRelativePath = "Training/Azure-Sentinel-Training-Lab/Artifacts/DetectionRules/rules.json"
 )
 

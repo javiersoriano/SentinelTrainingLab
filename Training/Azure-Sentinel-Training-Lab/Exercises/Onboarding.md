@@ -127,7 +127,7 @@ Make sure you have completed all the setup from the [README](../README.md) — i
 
 Click the button below to deploy directly into your Azure subscription:
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjaviersoriano%2FSentinelTrainingDemo%2Fmaster%2FTraining%2FAzure-Sentinel-Training-Lab%2FPackage%2FmainTemplate.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjaviersoriano%2FSentinelTrainingLab%2Fmaster%2FTraining%2FAzure-Sentinel-Training-Lab%2FPackage%2FmainTemplate.json)
 
 1. In the deployment form, select the **Subscription**, **Resource Group**, and **Workspace** from the previous exercises.
 2. Under **Detection Rules Auth Method**, choose your preferred option:
