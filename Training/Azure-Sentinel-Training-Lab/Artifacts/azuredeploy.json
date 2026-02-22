@@ -52,7 +52,7 @@
         }
     },
     "variables": {
-            "_artifactsLocation": "https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/"
+            "_artifactsLocation": "https://raw.githubusercontent.com/javiersoriano/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/"
     },
     "resources": [
         {
