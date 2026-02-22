@@ -135,31 +135,31 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 - Install Content Hub solutions and set up data connectors
 - Deploy the Training Lab solution
 
-[**Exercise 1 — Threat Intel IOC Matching**](./Exercises/E01_threat_intel_ioc_matching.md)
+[**Exercise 1 — Exploring the environment**](./Exercises/E01_exploration.md)
 
-[**Exercise 2 — Port Scan Threshold Tuning**](./Exercises/E02_port_scan_threshold_tuning.md)
+[**Exercise 2 — Threat Intel IOC Matching**](./Exercises/E02_threat_intel_ioc_matching.md)
 
-[**Exercise 3 — Okta MFA Manipulation**](./Exercises/E03_okta_mfa_manipulation.md)
+[**Exercise 3 — Port Scan Threshold Tuning**](./Exercises/E03_port_scan_threshold_tuning.md)
 
-[**Exercise 4 — Watchlist Integration**](./Exercises/E04_watchlist_integration.md)
+[**Exercise 4 — Okta MFA Manipulation**](./Exercises/E04_okta_mfa_manipulation.md)
 
-[**Exercise 5 — Device Isolation Response**](./Exercises/E05_device_isolation_response.md)
+[**Exercise 5 — Watchlist Integration**](./Exercises/E05_watchlist_integration.md)
 
-[**Exercise 6 — Data Lake KQL Jobs**](./Exercises/E06_datalake_kql_jobs.md)
+[**Exercise 6 — Sentinel data lake exploration**](./Exercises/E06_data_lake_exploration.md)
 
-[**Exercise 7 — Data Lake Port Diversity**](./Exercises/E07_datalake_port_diversity.md)
+[**Exercise 7 — Data Lake KQL Jobs**](./Exercises/E07_datalake_kql_jobs.md)
 
-[**Exercise 8 — Table Management: Tiers & Retention**](./Exercises/E08_table_management.md)
+[**Exercise 8 — Data Lake Port Diversity**](./Exercises/E08_datalake_port_diversity.md)
 
-[**Exercise 9 — Sentinel MCP Server Demo Prompts**](./Exercises/E09_MCP.md)
+[**Exercise 9 — Table Management: Tiers & Retention**](./Exercises/E09_table_management.md)
 
 [**Exercise 10 — Data Lake Notebooks**](./Exercises/E10_notebooks.md)
 
+[**Exercise 11 — Sentinel MCP Server Demo Prompts**](./Exercises/E11_MCP.md)
+
+[**Exercise 12 — Building custom graphs**](./Exercises/E12_custom_graph.md)
+
 ---
-
-## Reference
-
-> **Optional — Exercise 5 (Device Isolation Response):** This exercise requires a machine onboarded to **Microsoft Defender for Endpoint (MDE)**. If you plan to complete Exercise 5, onboard a test device to MDE before starting. See [Onboard devices to Microsoft Defender for Endpoint](https://learn.microsoft.com/en-us/defender-endpoint/onboarding) for instructions.
 
 ### Release notes
 
