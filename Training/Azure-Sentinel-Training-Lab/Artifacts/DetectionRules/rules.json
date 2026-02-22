@@ -459,5 +459,54 @@
         "organizationalScope": null,
         "responseActions": []
     }
+},
+{
+    "displayName": "[S5] [Palo Alto] C2 Beaconing Detected",
+    "description": "Detects periodic outbound connections to the same external IP (beaconing pattern) from Palo Alto firewall logs, enriched with CrowdStrike C2 detections via left join. Uses StartTime instead of TimeGenerated to handle batch-ingestion timestamp collapse. Demonstrates multi-source correlation.",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "let beacon_traffic = CommonSecurityLog\n| where TimeGenerated > ago(4h)\n| where DeviceVendor == \"Palo Alto Networks\"\n| where DeviceEventClassID == \"TRAFFIC\"\n| where Activity == \"TRAFFIC\"\n| where AdditionalExtensions has \"PanOSTrafficSubtype=end\"\n| where isnotempty(DestinationIP) and ipv4_is_private(DestinationIP) == false\n| summarize\n    BeaconCount = count(),\n    AvgBytesSent = avg(tolong(SentBytes)),\n    FirstSeen = min(todatetime(StartTime)),\n    LastSeen = max(todatetime(StartTime)),\n    SourceUser = take_any(SourceUserName),\n    SourceHost = take_any(SourceHostName)\n    by SourceIP, DestinationIP\n| where BeaconCount >= 5\n| extend DurationMin = datetime_diff('minute', LastSeen, FirstSeen)\n| where DurationMin >= 10;\nlet cs_c2 = CrowdStrikeDetections\n| where TimeGenerated > ago(4h)\n| where Tactic == \"Command and Control\"\n| extend NA = todynamic(NetworkAccesses)\n| mv-expand NA\n| project CSDetection = Name, C2IP = tostring(NA.remote_address);\nbeacon_traffic\n| join kind=leftouter cs_c2 on $left.DestinationIP == $right.C2IP\n| project\n    FirstSeen,\n    LastSeen,\n    SourceIP,\n    DestinationIP,\n    BeaconCount,\n    DurationMin,\n    AvgBytesSent,\n    SourceUser,\n    SourceHost,\n    CSDetection\n| extend\n    TimeGenerated = FirstSeen,\n    AccountUpn = SourceUser,\n    DeviceName = SourceHost,\n    RemoteIP = DestinationIP,\n    ReportId = tostring(hash_sha256(strcat(SourceIP, DestinationIP, tostring(BeaconCount))))"
+    },
+    "schedule": { "period": "1H" },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "C2 beaconing from {{DeviceName}} to {{DestinationIP}} [CrowdStrike + Palo Alto]",
+            "description": "Periodic outbound connections detected from an internal host to an external IP, consistent with C2 beaconing (T1071.001). CrowdStrike correlation may confirm endpoint C2 activity.",
+            "severity": "high",
+            "category": "CommandAndControl",
+            "mitreTechniques": ["T1071.001", "T1573"],
+            "recommendedActions": "Isolate the affected endpoint. Block the destination IP at the firewall. Investigate the endpoint for malware. Check CrowdStrike for correlated detections.",
+            "impactedAssets": [
+                { "@odata.type": "#microsoft.graph.security.impactedDeviceAsset", "identifier": "deviceName" },
+                { "@odata.type": "#microsoft.graph.security.impactedUserAsset", "identifier": "accountUpn" }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
+},
+{
+    "displayName": "[S7] [AWS] Cloud Attack Chain",
+    "description": "Detects a multi-event AWS attack chain where a single identity performs 4+ suspicious actions including privilege escalation, infrastructure deployment, or audit trail destruction. Uses make_set and set_has_element for event-chain correlation.",
+    "isEnabled": true,
+    "queryCondition": {
+        "queryText": "AWSCloudTrail\n| where TimeGenerated > ago(4h)\n| where isnotempty(UserIdentityUserName)\n| where EventName in (\n    \"ConsoleLogin\", \"CreateUser\", \"AttachUserPolicy\",\n    \"PutUserPolicy\", \"CreateAccessKey\",\n    \"AuthorizeSecurityGroupIngress\", \"RunInstances\",\n    \"GetObject\", \"PutBucketPolicy\",\n    \"StopLogging\", \"DeleteTrail\", \"UpdateTrail\")\n| extend ResourceArn = tostring(parse_json(Resources).resourceName)\n| summarize\n    EventCount = count(),\n    Events = make_set(EventName),\n    Regions = make_set(AWSRegion),\n    ImpactedResources = make_set_if(ResourceArn, isnotempty(ResourceArn)),\n    FirstSeen = min(TimeGenerated),\n    LastSeen = max(TimeGenerated),\n    UserIdentityArn = take_any(UserIdentityArn)\n    by UserIdentityUserName, SourceIpAddress\n| where EventCount >= 4\n| where set_has_element(Events, \"StopLogging\") or set_has_element(Events, \"DeleteTrail\")\n    or set_has_element(Events, \"RunInstances\") or set_has_element(Events, \"AttachUserPolicy\")\n| project\n    FirstSeen,\n    LastSeen,\n    UserIdentityUserName,\n    SourceIpAddress,\n    EventCount,\n    Events,\n    Regions,\n    UserIdentityArn,\n    ImpactedResources\n| extend\n    TimeGenerated = FirstSeen,\n    AccountUpn = UserIdentityUserName,\n    RemoteIP = SourceIpAddress,\n    AppName = \"Amazon Web Services\",\n    AmazonResourceId1 = tostring(ImpactedResources[0]),\n    AmazonResourceId2 = tostring(ImpactedResources[1]),\n    AmazonResourceId3 = tostring(ImpactedResources[2]),\n    ReportId = tostring(hash_sha256(strcat(UserIdentityUserName, SourceIpAddress, tostring(EventCount))))"
+    },
+    "schedule": { "period": "1H" },
+    "detectionAction": {
+        "alertTemplate": {
+            "title": "Multi-stage cloud attack by {{UserIdentityUserName}} [AWS]",
+            "description": "An AWS identity performed multiple high-risk actions including privilege escalation, resource deployment, and/or audit log tampering. This pattern is consistent with a full cloud compromise chain (T1078.004, T1098, T1562.008).",
+            "severity": "high",
+            "category": "Impact",
+            "mitreTechniques": ["T1078.004", "T1098", "T1562.008", "T1578"],
+            "recommendedActions": "Disable the IAM user. Revoke active sessions and access keys. Re-enable CloudTrail. Investigate launched instances and modified security groups. Check S3 access logs.",
+            "impactedAssets": [
+                { "@odata.type": "#microsoft.graph.security.impactedUserAsset", "identifier": "accountUpn" }
+            ]
+        },
+        "organizationalScope": null,
+        "responseActions": []
+    }
 }
 ]

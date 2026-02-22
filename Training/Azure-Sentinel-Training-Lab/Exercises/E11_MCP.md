@@ -14,7 +14,7 @@ Before running any of the prompts below, you need to connect VS Code to the Sent
 2. Enter the MCP server URL for the collection you want (see the table below).
 3. Give it a friendly Server ID (e.g. `Sentinel Data Exploration`).
 4. When prompted, **Allow** authentication — sign in with an account that has at least the **Security Reader** role.
-5. Open **Copilot Chat** (`Ctrl + Alt + I`), switch to **Agent mode**, and confirm the MCP tools appear under the tools icon.
+5. Open **GitHub Copilot Chat** (`Ctrl + Alt + I`), switch to **Agent mode**, and confirm the MCP tools appear under the tools icon.
 
 Repeat steps 1–3 for each collection you want to connect (Data Exploration + Triage recommended for PoCs).
 
