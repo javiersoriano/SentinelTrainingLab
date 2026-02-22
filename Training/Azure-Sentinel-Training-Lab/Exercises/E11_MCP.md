@@ -1,4 +1,4 @@
-# Exercise 9 — Sentinel MCP Server Demo Prompts
+# Exercise 11 — Sentinel MCP Server Demo Prompts
 
 These prompts are designed for Solutions Engineers to demonstrate the Microsoft Sentinel MCP Server capabilities during customer PoCs. Each prompt showcases a different MCP capability and maps to the PoCaaS attack scenario data.
 

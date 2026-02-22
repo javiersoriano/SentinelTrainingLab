@@ -1,4 +1,4 @@
-# Creating a Custom Graph in Microsoft Sentinel (Hands‑On, Step by Step)
+# Exercise 12 - Creating a Custom Graph in Microsoft Sentinel (Hands‑On, Step by Step)
 
 This guide walks through how to create a **custom graph** in Microsoft Sentinel..  
 

@@ -1,4 +1,4 @@
-# Exercise 1 — Threat Intel IOC Matching Across Sources
+# Exercise 2 — Threat Intel IOC Matching Across Sources
 
 **Rule:** `[E1] [Threat Intel] IOC Match Across Sources`
 **Deployed in:** `Artifacts/DetectionRules/rules.json`
