@@ -322,6 +322,16 @@ Instead of writing queries from scratch, you can use **built-in job templates** 
 - Use **job templates** for common scenarios to accelerate setup
 - Only promote the data you need — use `project` and `where` filters to minimize analytics tier costs
 
+---
+
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 8 — Data Lake vs Real-Time Detection](./E08_datalake_port_diversity.md)**
+
+---
+
 ## Microsoft Learn References
 
 - [Create KQL jobs in the Microsoft Sentinel data lake](https://learn.microsoft.com/en-us/azure/sentinel/datalake/kql-jobs)
@@ -329,3 +339,4 @@ Instead of writing queries from scratch, you can use **built-in job templates** 
 - [KQL queries in the Microsoft Sentinel data lake](https://learn.microsoft.com/en-us/azure/sentinel/datalake/kql-queries)
 - [Microsoft Sentinel data lake overview](https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-lake-overview)
 - [Handle ingestion delay in scheduled analytics rules](https://learn.microsoft.com/en-us/azure/sentinel/ingestion-delay)
+

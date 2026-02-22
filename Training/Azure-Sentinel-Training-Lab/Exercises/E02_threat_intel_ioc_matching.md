@@ -114,6 +114,12 @@ let ioc_keys = dynamic(["AKIAIOSFODNN7EXAMPLE"]);
 - IOC lists can be embedded as `dynamic` arrays or loaded from watchlists (see [Exercise 4](./E04_watchlist_integration.md))
 - The `ReportId` column must be unique per event — use `hash_sha256(strcat(...))` to generate deterministic IDs
 
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 3 — Port Scan Detection & Threshold Tuning](./E03_port_scan_threshold_tuning.md)**
+
 ## Microsoft Learn References
 
 - [union operator (KQL)](https://learn.microsoft.com/en-us/kusto/query/union-operator)

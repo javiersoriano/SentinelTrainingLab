@@ -155,6 +155,14 @@ Additionally, **Sentinel Graph** provides unified graph analytics (attack paths,
 
 ---
 
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 12 — Creating a Custom Graph in Microsoft Sentinel](./E12_custom_graph.md)**
+
+---
+
 ## References
 
 - [Use an MCP tool in Visual Studio Code](https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-use-tool-visual-studio-code) — setup guide

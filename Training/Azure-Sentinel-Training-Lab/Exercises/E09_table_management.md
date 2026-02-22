@@ -209,6 +209,16 @@ The tier a table lives in directly affects which detection rules can query it. R
 - Not all tables can change tiers — some XDR and Sentinel solution tables must remain in the analytics tier
 - Always review active detection rules before changing a table's tier to avoid breaking detections
 
+---
+
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 10 — Data Lake Notebooks](./E10_notebooks.md)**
+
+---
+
 ## Microsoft Learn References
 
 - [Configure table settings in Microsoft Sentinel](https://learn.microsoft.com/en-us/azure/sentinel/manage-table-tiers-retention)
