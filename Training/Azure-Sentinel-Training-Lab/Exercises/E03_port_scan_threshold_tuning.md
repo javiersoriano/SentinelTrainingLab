@@ -126,6 +126,13 @@ The deployed rule already works with a threshold of 20. The extension challenge 
 - `make_set()` provides valuable context in the alert by showing which ports were scanned
 - Time window and schedule frequency must be aligned (lookback ≥ 4× frequency)
 
+
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 4 — Okta MFA Factor Manipulation](./E04_okta_mfa_manipulation.md)**
+
 ## Microsoft Learn References
 
 - [summarize operator](https://learn.microsoft.com/en-us/kusto/query/summarize-operator)

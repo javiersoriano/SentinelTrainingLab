@@ -169,6 +169,12 @@ The complete modified query is in Step 4 above. Key elements:
 - Watchlists refresh every 12 days in Sentinel — plan updates accordingly
 - Watchlists are limited to 3.8 MB for local uploads (500 MB via Azure Storage)
 
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 6 — Sentinel Data Lake Exploration](./E06_data_lake_exploration.md)**
+
 ## Microsoft Learn References
 
 - [Create watchlists in Microsoft Sentinel](https://learn.microsoft.com/en-us/azure/sentinel/watchlists-create)

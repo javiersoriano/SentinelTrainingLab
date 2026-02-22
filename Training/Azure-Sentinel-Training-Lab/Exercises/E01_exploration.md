@@ -309,6 +309,6 @@ CommonSecurityLog
 
 ## Next steps
 
-Congratulations, you have completed the onboarding exercise! You can now continue to the next exercise:
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
 
 - **[Exercise 2 — Threat Intel IoC matching](./E02_threat_intel_ioc_matching.md)**

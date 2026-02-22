@@ -137,6 +137,12 @@ This correlates a foreign login with a subsequent MFA change within 30 minutes �
 - Correlating identity events across time windows (`between`) links reconnaissance to privilege escalation
 - Always filter on `SUCCESS` for MFA changes — failed attempts are noise in this context
 
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 5 — Watchlist Integration](./E05_watchlist_integration.md)**
+
 ## Microsoft Learn References
 
 - [Advanced hunting identity tables](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-identitylogonevents-table)

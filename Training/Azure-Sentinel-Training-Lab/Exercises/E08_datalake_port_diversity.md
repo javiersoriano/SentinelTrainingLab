@@ -146,6 +146,16 @@ The second filter adds a bytes constraint — low bytes + many ports = scanning,
 - Both approaches can coexist — real-time catches urgent threats, data lake catches patterns
 - The `ThreatCategories` enrichment from data lake provides threat context unavailable in raw logs
 
+---
+
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 9 — Table Management: Tiers & Retention](./E09_table_management.md)**
+
+---
+
 ## Microsoft Learn References
 
 - [Advanced hunting best practices](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-best-practices)

@@ -245,6 +245,14 @@ external_table("AWSCloudTrail")
 
 ---
 
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 7 — Sentinel data lake KQL Jobs](./E07_datalake_kql_jobs.md)**
+
+---
+
 ## Microsoft Learn References
 
 - [Run KQL queries on the Microsoft Sentinel data lake](https://learn.microsoft.com/en-us/azure/sentinel/datalake/kql-queries)
@@ -254,4 +262,3 @@ external_table("AWSCloudTrail")
 - [Manage data tiers and retention in Microsoft Defender portal](https://aka.ms/manage-data-defender-portal-overview)
 - [Troubleshoot KQL queries in the Microsoft Sentinel data lake](https://learn.microsoft.com/en-us/azure/sentinel/datalake/kql-troubleshoot)
 - [KQL overview](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/)
-

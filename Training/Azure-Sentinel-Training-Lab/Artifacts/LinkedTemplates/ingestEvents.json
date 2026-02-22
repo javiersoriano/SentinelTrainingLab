@@ -49,7 +49,7 @@
                 "logProgress": true,
                 "logVerbose": true,
                 "publishContentLink": {
-                    "uri": "[concat('https://raw.githubusercontent.com/kapetanios55/SentinelTrainingDemo/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/RunIngest.ps1', '?v=', parameters('scheduleStartTime'))]"
+                    "uri": "[concat('https://raw.githubusercontent.com/javiersoriano/SentinelTrainingLab/master/Training/Azure-Sentinel-Training-Lab/Artifacts/Scripts/RunIngest.ps1', '?v=', parameters('scheduleStartTime'))]"
                 }
             }
         },

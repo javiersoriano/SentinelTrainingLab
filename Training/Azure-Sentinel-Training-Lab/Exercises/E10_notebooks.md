@@ -119,6 +119,14 @@ print("🗑️ Table deleted")
 
 ---
 
+## Next steps
+
+Congratulations, you have completed this exercise! You can now continue to the next exercise:
+
+- **[Exercise 11 — Sentinel MCP Server Demo Prompts](./E11_MCP.md)**
+
+---
+
 ## References
 
 - [Run notebooks on the Microsoft Sentinel data lake](https://learn.microsoft.com/en-us/azure/sentinel/datalake/notebooks) — full setup and usage guide

@@ -27,3 +27,8 @@ Follow these steps to get your environment ready:
 
 
 
+---
+
+## Next steps
+
+Congratulations, you have completed all exercises in this lab! You've explored Microsoft Sentinel's full capabilities from incident investigation to custom graph building.
