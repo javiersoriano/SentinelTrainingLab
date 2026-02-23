@@ -169,7 +169,7 @@ This show you how an analyst can hunt for additional connections to/from the ori
 
 Congratulations, you have completed this exercise! You can now continue to the next exercise:
 
-- **[Exercise 13 — Creating a Custom Graph in Microsoft Sentinel](./E12_custom_graph.md)**
+- **[Exercise 13 — Creating a Custom Graph in Microsoft Sentinel](./E13_custom_graph.md)**
 
 ---
 
