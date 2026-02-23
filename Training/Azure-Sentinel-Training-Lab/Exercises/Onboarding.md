@@ -155,7 +155,7 @@ Click the button below to deploy directly into your Azure subscription:
 
 Congratulations, you have completed the onboarding exercise! You can now continue to the next exercise:
 
-- **[Exercise 1 — Explore your lab environment](./Exploration.md)**
+- **[Exercise 1 — Explore your lab environment](./E01_exploration.md)**
 
 ### Learn more
 
