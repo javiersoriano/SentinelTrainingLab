@@ -47,7 +47,7 @@
         },
         "detectionRulesScheduleStartTime": {
             "type": "string",
-            "defaultValue": "[dateTimeAdd(utcNow('yyyy-MM-ddTHH:mm:ssZ'), 'PT35M')]",
+            "defaultValue": "[dateTimeAdd(utcNow('yyyy-MM-ddTHH:mm:ssZ'), 'PT30M')]",
             "metadata": {
                 "description": "UTC start time for the detection-rules runbook (runs after ingestion)"
             }
