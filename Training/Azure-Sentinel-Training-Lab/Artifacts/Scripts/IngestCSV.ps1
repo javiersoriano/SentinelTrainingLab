@@ -831,6 +831,30 @@ function Get-OutputTypeOverridesFromError {
     return $overrides
 }
 
+function Get-FlattenedDynamicGroups {
+    param(
+        [string[]]$NormalizedColumns,
+        [object[]]$SchemaColumns
+    )
+
+    $groups = [ordered]@{}
+    if (-not $SchemaColumns) { return $groups }
+
+    $dynamicCols = @($SchemaColumns | Where-Object { $_.type -eq "dynamic" })
+    foreach ($dynCol in $dynamicCols) {
+        $parentName = $dynCol.name
+        $prefix = "${parentName}_"
+        $subCols = @($NormalizedColumns | Where-Object {
+            $_.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)
+        })
+        if ($subCols.Count -ge 2) {
+            $groups[$parentName] = $subCols
+        }
+    }
+
+    return $groups
+}
+
 function Build-BuiltInTransformKql {
     param(
         [hashtable]$ColumnMap,
@@ -846,6 +870,7 @@ function Build-BuiltInTransformKql {
         boolean  = "tobool"
         guid     = "toguid"
         datetime = "todatetime"
+        dynamic  = "todynamic"
     }
 
     $timeColumn = $null
@@ -885,6 +910,21 @@ function Build-BuiltInTransformKql {
         }
     }
 
+    # Detect flattened dynamic fields and recompose with pack()
+    $flattenedGroups = Get-FlattenedDynamicGroups -NormalizedColumns @($normalizedColumns) -SchemaColumns $SchemaColumns
+    $flattenedSubColumns = @()
+    foreach ($parentName in $flattenedGroups.Keys) {
+        $subCols = $flattenedGroups[$parentName]
+        $flattenedSubColumns += $subCols
+        $packArgs = @()
+        foreach ($subCol in $subCols) {
+            $subFieldName = $subCol.Substring($parentName.Length + 1)
+            $packArgs += "`"$subFieldName`", $subCol"
+        }
+        $transformParts += "$parentName = pack($($packArgs -join ', '))"
+        Write-Host "    Recomposing flattened columns into dynamic field '$parentName' ($($subCols.Count) sub-fields)" -ForegroundColor Cyan
+    }
+
     if ($normalizedColumns -contains "EventTime") {
         $transformParts += "EventTime = todatetime(EventTime)"
     }
@@ -896,6 +936,12 @@ function Build-BuiltInTransformKql {
 
     if ($SchemaColumns) {
         $projectColumns = @($SchemaColumns.name | Where-Object { $normalizedColumns -contains $_ })
+        # Add parent dynamic columns created via pack()
+        foreach ($parentName in $flattenedGroups.Keys) {
+            if (-not ($projectColumns -contains $parentName)) {
+                $projectColumns += $parentName
+            }
+        }
         if (-not ($projectColumns -contains "TimeGenerated")) {
             $projectColumns += "TimeGenerated"
         }
