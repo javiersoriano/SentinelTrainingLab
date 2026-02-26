@@ -66,11 +66,6 @@ Okta pre-populates geolocation fields that add critical context:
 
 ### Step 1 — Verify Data Availability
 
-> **Note:** This exercise requires **re-ingestion** of attack data. The original data load may not include MFA manipulation events. Run:
-> ```
-> .\Scripts\IngestCSV.ps1
-> ```
-
 Verify the events exist:
 
 ```kusto
