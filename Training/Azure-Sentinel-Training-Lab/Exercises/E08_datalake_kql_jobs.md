@@ -1,4 +1,4 @@
-# Exercise 7 — Sentinel data lake KQL Jobs
+# Exercise 8 — Sentinel data lake KQL Jobs
 
 **Topic:** Create and schedule KQL jobs in the Microsoft Sentinel data lake  
 **Difficulty:** Intermediate  
