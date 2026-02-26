@@ -182,7 +182,6 @@ On the **Schedule the query job** page:
    | Setting | Value |
    |---|---|
    | **Repeat frequency** | Hourly |
-   | **Repeat every** | 4 hours |
    | **From** | Set to a date/time at least 30 minutes from now |
    | **To** | Select **Set job to run indefinitely** (or pick an end date for testing) |
 
@@ -202,7 +201,7 @@ On the **Schedule the query job** page:
 1. Review the job summary:
    - **Job name:** `PaloAlto_ThreatSummary`
    - **Destination table:** `PaloAlto_ThreatSummary_KQL_CL`
-   - **Schedule:** Every 4 hours
+   - **Schedule:** Every hour
    - **Query:** Aggregation of Palo Alto firewall data
 
 2. Select **Submit** to create the job
@@ -328,7 +327,7 @@ Instead of writing queries from scratch, you can use **built-in job templates** 
 
 Congratulations, you have completed this exercise! You can now continue to the next exercise:
 
-- **[Exercise 8 — Data Lake vs Real-Time Detection](./E08_datalake_port_diversity.md)**
+- **[Exercise 9 — Data Lake vs Real-Time Detection](./E09_datalake_port_diversity.md)**
 
 ---
 

@@ -249,7 +249,7 @@ external_table("AWSCloudTrail")
 
 Congratulations, you have completed this exercise! You can now continue to the next exercise:
 
-- **[Exercise 7 — Sentinel data lake KQL Jobs](./E07_datalake_kql_jobs.md)**
+- **[Exercise 7 — Sentinel data lake KQL Jobs](./E07_table_management.md)**
 
 ---
 

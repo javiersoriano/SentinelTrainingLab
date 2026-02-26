@@ -152,7 +152,7 @@ The second filter adds a bytes constraint — low bytes + many ports = scanning,
 
 Congratulations, you have completed this exercise! You can now continue to the next exercise:
 
-- **[Exercise 9 — Table Management: Tiers & Retention](./E09_table_management.md)**
+- **[Exercise 10 — Table Management: Tiers & Retention](./E10_notebooks.md)**
 
 ---
 
