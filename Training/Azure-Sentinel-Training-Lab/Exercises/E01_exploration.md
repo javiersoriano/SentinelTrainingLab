@@ -235,6 +235,12 @@ This dashboard provides a matrix view of your detection coverage mapped to the M
 
 In this environment, you should see coverage across Initial Access, Execution, Credential Access, Lateral Movement, Command & Control, Exfiltration, and Impact. However, techniques like Discovery (T1046 — port scanning) and Persistence may show gaps — these are covered by the disabled exercise rules, which you can enable after building them.
 
+### Important note about Sentinel Analytics Rules and Defender Custom Detections
+
+Custom detections is now the best way to create new detection rules across Microsoft Sentinel SIEM and Microsoft Defender XDR. With custom detections, you can reduce ingestion costs, get unlimited real-time detections, and benefit from seamless integration with Defender XDR data, functions, and remediation actions with automatic entity mapping. For more information, read [this blog](https://techcommunity.microsoft.com/blog/microsoftthreatprotectionblog/custom-detections-are-now-the-unified-experience-for-creating-detections-in-micr/4463875).
+
+Analytics rules and Custom detections are still not at full feature parity, with a few gaps on both sides. These gaps will be covered in Custom detections over the next quarters, so they have the best of both worlds and become the sole custom detection engine for Microsoft SIEM+XDR. In the following article you can find a table that compares the features between both: [Compare analytics rules and custom detections features](https://learn.microsoft.com/en-us/azure/sentinel/compare-analytics-rules-custom-detections#compare-analytics-rules-and-custom-detections-features)
+
 ### Custom Detection Rules
 
 Navigate to **Investigation & response → Custom detection rules** (in Defender XDR).

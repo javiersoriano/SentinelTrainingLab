@@ -147,11 +147,11 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 [**Exercise 6 — Sentinel data lake exploration**](./Exercises/E06_data_lake_exploration.md)
 
-[**Exercise 7 — Data Lake KQL Jobs**](./Exercises/E07_datalake_kql_jobs.md)
+[**Exercise 7 — Table Management: Tiers & Retention**](./Exercises/E07_table_management.md)
 
-[**Exercise 8 — Data Lake Port Diversity**](./Exercises/E08_datalake_port_diversity.md)
+[**Exercise 8 — Data Lake KQL Jobs**](./Exercises/E08_datalake_kql_jobs.md)
 
-[**Exercise 9 — Table Management: Tiers & Retention**](./Exercises/E09_table_management.md)
+[**Exercise 9 — Data Lake Port Diversity**](./Exercises/E09_datalake_port_diversity.md)
 
 [**Exercise 10 — Data Lake Notebooks**](./Exercises/E10_notebooks.md)
 

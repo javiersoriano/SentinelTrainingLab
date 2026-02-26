@@ -215,7 +215,7 @@ The tier a table lives in directly affects which detection rules can query it. R
 
 Congratulations, you have completed this exercise! You can now continue to the next exercise:
 
-- **[Exercise 10 — Data Lake Notebooks](./E10_notebooks.md)**
+- **[Exercise 8 — Data Lake Notebooks](./E08_datalake_kql_jobs.md)**
 
 ---
 
