@@ -32,14 +32,36 @@ These two files instruct GitHub Copilot how to create a custom graph using a Jup
 1. Open a new Github Copilot chat.
 2. Write this prompt:
 
-> *"Query each table for the last 2 days of data and identify evidence of a multi-stage attack kill chain — look for brute force or credential-based logon activity, successful logons to machines, EDR alerts with MITRE ATT&CK tactics, and outbound network connections being blocked by the firewall. Based on what you actually find, build a graph notebook that connects accounts to the machines they targeted, machines to the alerts they triggered, alerts to their MITRE tactics, and machines to blocked outbound destinations — so I can trace the full attack path from initial access through to impact."*
+> *"Based on the data I have in my Sentinel workspace in the following tables AWSCloudTrail, CommonSecurityLog, CrowdStrikeAlerts, CrowdStrikeDetections, CrowdStrikeHosts, CrowdStrikeVulnerabilities, GCPAuditLogs, SecurityEvent over the last day, please create a graph notebook that shows the connections from accounts to the machines they targeted, machines to the alerts they triggered, alerts to their MITRE tactics, and machines to blocked outbound destinations. Please provide a plan before going ahead with the notebook"*
 
 3. GitHub Copilot will start building the notebook for you. This will take a few minutes.
 4. Once it finishes, review the output and click "Keep" if you're happy with the results
 
 ## 3. Execute custom graph notebook
 
-Run each cell in the notebook and review the outputs.
+1. Go to File explorer and you should see a new notebook that has been created for you.
+2. Review the different sections and identity these tasks:
+    - Tables being loaded
+    - Create nodes
+    - Create edges
+    - Build graph
+3. Click on **Create Scheduled Job** just above the notebook
+![VibeGraphing1](../Images/VibeGraphing3.jpg)
+4. Select **Create a graph job**
+![VibeGraphing1](../Images/VibeGraphing4.jpg)
+5. A tab similar to the one below appears. Select **graph medium pool (32 vCores)** as the Cluster configuration
+6. Under **Schedule**, select **On demand**. Click on **Submit** in the top right.
+7. ![VibeGraphing1](../Images/VibeGraphing5.jpg)
+8.  After a minute or two, you will see your custom graph listed in the Microsoft Sentinel extension
+![VibeGraphing1](../Images/VibeGraphing6.jpg)
+9. Click on it and a new tab will open with all the job details. Navigate to **Job details** tab and you will see the job run history, where you can see the latest status. It will take around 30 minutes to fully execute
+![VibeGraphing1](../Images/VibeGraphing7.jpg)
+
+
+## 4. Run a graph query
+
+Once your new custom graph is ready, you can query it withing VSCode:
+
 
 ---
 
