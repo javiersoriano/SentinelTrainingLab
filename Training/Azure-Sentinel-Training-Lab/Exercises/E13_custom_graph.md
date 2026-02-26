@@ -45,7 +45,7 @@ These two files instruct GitHub Copilot how to create a custom graph using a Jup
     - Create nodes
     - Create edges
     - Build graph
-3. Click on **Create Scheduled Job** just above the notebook
+3. Normally, you would execute this notebook locally to debug possible errors, but to make it faster, we will create a new graph job to execute now. Click on **Create Scheduled Job** just above the notebook
 ![VibeGraphing1](../Images/VibeGraphing3.jpg)
 4. Select **Create a graph job**
 ![VibeGraphing1](../Images/VibeGraphing4.jpg)
