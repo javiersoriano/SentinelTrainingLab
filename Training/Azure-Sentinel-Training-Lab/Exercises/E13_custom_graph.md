@@ -32,7 +32,7 @@ These two files instruct GitHub Copilot how to create a custom graph using a Jup
 1. Open a new Github Copilot chat.
 2. Write this prompt:
 
-> *"Based on the data I have in my Sentinel workspace in the following tables AWSCloudTrail, CommonSecurityLog, CrowdStrikeAlerts, CrowdStrikeDetections, CrowdStrikeHosts, CrowdStrikeVulnerabilities, GCPAuditLogs, SecurityEvent over the last day, please create a graph notebook that shows the connections from accounts to the machines they targeted, machines to the alerts they triggered, alerts to their MITRE tactics, and machines to blocked outbound destinations. Please provide a plan before going ahead with the notebook"*
+> *"Based on the data I have in Sentinel adminsoc workspace in the following tables OktaV2_CL, AWSCloudTrail, GCPAuditLogs, CrowdStrikeDetections, CrowdStrikeHosts, CrowdStrikeVulnerabilities, CommonSecurityLog, SEG_MailGuard_CL over the last day, create a graph notebook that maps relationships between user, devices, IP addresses and file hashes. Make sure that you query the data in each table to fully understand the table schema and entity extraction patterns. Please show me a plan before building it"*
 
 3. GitHub Copilot will start building the notebook for you. This will take a few minutes.
 4. Once it finishes, review the output and click "Keep" if you're happy with the results
