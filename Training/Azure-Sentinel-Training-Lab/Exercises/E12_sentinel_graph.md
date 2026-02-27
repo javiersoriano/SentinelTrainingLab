@@ -33,7 +33,6 @@ Before starting, confirm the following are in place:
 
 - Access to Zava public environment
 
-
 ---
 
 ## Part 1 — Blast Radius Analysis
@@ -50,13 +49,13 @@ The blast radius graph generates an interactive visualisation of possible propag
 
 #### 1.1 Open an incident
 
-1. In your Zava public browser, go to [this incident](https://security.microsoft.com/incident2/44224/overview?tid=0527ecb7-06fb-4769-b324-fd4a3bb865eb)
+1. In your Zava public browser, go to [this incident](https://security.microsoft.com/incident2/37602/overview?tid=0527ecb7-06fb-4769-b324-fd4a3bb865eb)
 2. The incident page opens with the **Attack story** tab active. You should see the incident graph populated with nodes representing devices, users, and alerts.
 
 
 #### 1.2 Trigger blast radius from a node
 
-1. In the incident graph, click on user **elviaa**.
+1. In the incident graph, click on user **u1815**.
 2. Select **View blast radius**.
    - The graph expands to show propagation paths toward critical targets highlighted with risk indicators.
    
