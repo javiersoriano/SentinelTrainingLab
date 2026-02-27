@@ -139,7 +139,7 @@ Additionally, **Sentinel Graph** provides unified graph analytics (attack paths,
 
 ---
 
-## 11 — Creating a Custom MCP Tool
+## Creating a Custom MCP Tool
 
 In this exercise you will create a **custom MCP tool** that queries CrowdStrike endpoint vulnerability data scoped to a specific hostname. Custom tools let you expose any KQL query as a named, parameterised MCP tool that AI agents can discover and call automatically — giving you deterministic control over exactly what data is surfaced.
 
