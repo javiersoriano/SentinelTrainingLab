@@ -86,8 +86,8 @@ Select the original node again and choose **Hide blast radius** to return to the
 
 The incident graph only provides the user's alias, but we don't have the user's name. 
 
-1. Click on user **elviaa** and select **User details**.
-2. The entity page for the user appears on the right and we can see it corresponds to user **Elvia Atkins**.
+1. Click on user **u1815** and select **User details**.
+2. The entity page for the user appears on the right and we can see it corresponds to user **Renu Kolar**.
 3. Take a not of this user name.
 
 ---
@@ -121,8 +121,6 @@ Available scenarios:
 2. In the Advanced Hunting page, select the **Hunting graph icon** (graph icon in the toolbar next to the query editor). A new tab labelled **New hunt** opens.
 
 #### 2.2 Explore attack paths to a critical asset
-
-In the previous exercise about Blast Radius, we saw that user Elvia Atkins had access to a service principal, Let's now see more connections from that user.
 
 1. Select **Search with Predefined scenarios**.
 2. In the side panel that appears, select the **Entity connections** scenario.
