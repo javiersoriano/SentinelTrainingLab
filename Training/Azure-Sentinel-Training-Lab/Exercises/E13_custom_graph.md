@@ -46,15 +46,19 @@ These two files instruct GitHub Copilot how to create a custom graph using a Jup
     - Create edges
     - Build graph
 3. Normally, you would execute this notebook locally to debug possible errors, but to make it faster, we will create a new graph job to execute now. Click on **Create Scheduled Job** just above the notebook
+
 ![VibeGraphing1](../Images/VibeGraphing3.jpg)
 4. Select **Create a graph job**
+
 ![VibeGraphing1](../Images/VibeGraphing4.jpg)
 5. A tab similar to the one below appears. Select **graph medium pool (32 vCores)** as the Cluster configuration
 6. Under **Schedule**, select **On demand**. Click on **Submit** in the top right.
-7. ![VibeGraphing1](../Images/VibeGraphing5.jpg)
-8.  After a minute or two, you will see your custom graph listed in the Microsoft Sentinel extension
+![VibeGraphing1](../Images/VibeGraphing5.jpg)
+7.  After a minute or two, you will see your custom graph listed in the Microsoft Sentinel extension
+
 ![VibeGraphing1](../Images/VibeGraphing6.jpg)
-9. Click on it and a new tab will open with all the job details. Navigate to **Job details** tab and you will see the job run history, where you can see the latest status. It will take around 30 minutes to fully execute
+8. Click on it and a new tab will open with all the job details. Navigate to **Job details** tab and you will see the job run history, where you can see the latest status. It will take around 30 minutes to fully execute
+
 ![VibeGraphing1](../Images/VibeGraphing7.jpg)
 
 
