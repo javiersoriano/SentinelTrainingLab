@@ -139,6 +139,85 @@ Additionally, **Sentinel Graph** provides unified graph analytics (attack paths,
 
 ---
 
+## 11 — Creating a Custom MCP Tool
+
+In this exercise you will create a **custom MCP tool** that queries CrowdStrike endpoint vulnerability data scoped to a specific hostname. Custom tools let you expose any KQL query as a named, parameterised MCP tool that AI agents can discover and call automatically — giving you deterministic control over exactly what data is surfaced.
+
+> **Prerequisites:** Security Operator (or higher) role in the Defender portal to save custom tools; Security Reader role to invoke them. The Sentinel Data Lake must be enabled in your workspace.
+
+### Step 1 — Author the query in Advanced Hunting
+
+1. Open the [Microsoft Defender portal](https://security.microsoft.com) and go to **Hunting → Advanced hunting**.
+2. Paste the following KQL query into the query editor:
+
+```kql
+CrowdStrikeVulnerabilities
+| where HostInfo.hostname == '{Hostname}'
+| where Status in ("open", "exception")
+| project
+    TimeGenerated,
+    Hostname      = HostInfo.hostname,
+    IP            = HostInfo.local_ip,
+    CVE           = Cve.id,
+    Severity      = Cve.severity,
+    BaseScore     = Cve.base_score,
+    Description   = Cve.description,
+    AffectedApp   = App.product_name,
+    Vendor        = App.vendor,
+    Status,
+    Remediation   = Remediation.action,
+    RemediationDetails = Remediation.description
+| sort by todouble(BaseScore) desc
+```
+
+3. Replace `{Hostname}` with an actual hostname (e.g. `win11a`) and click **Run query** to validate that the query returns results and the column layout looks correct.
+4. Once satisfied, restore `{Hostname}` as the placeholder text — this is what tells the portal that `Hostname` is a parameter.
+
+> **What the query does:** It scans the `CrowdStrikeVulnerabilities` table for all open or excepted CVEs on the specified host, projects the most actionable columns, and sorts by CVSS base score so the most critical vulnerabilities appear first.
+
+### Step 2 — Save the query as a custom MCP tool
+
+1. In the Advanced hunting query editor, open the **Save** dropdown and select **Save as tool**.
+2. In the **Save tool** flyout panel, fill in the following fields:
+
+   | Field | Value |
+   |---|---|
+   | **Name** | `get_host_vulnerabilities` |
+   | **Description** | Retrieves open and excepted CrowdStrike CVEs for a specific endpoint hostname, sorted by CVSS base score descending. Use this tool when investigating a compromised host or assessing patch exposure. |
+   | **Collection** | Select **Create new collection** and name it `VulnerabilityTools` |
+   | **Default workspace** | Select your lab Sentinel workspace |
+
+3. Under **Parameters**, add the following entry:
+
+   | Parameter name | Description |
+   |---|---|
+   | `Hostname` | The hostname of the endpoint to query (e.g. `win11a`). Must match the `HostInfo.hostname` value in CrowdStrike data. |
+
+4. Click **Save**. The tool is now registered and available under the **Tools** tab in the Advanced hunting page.
+
+### Step 3 — Connect the custom collection to VS Code
+
+1. Still in Advanced Hunting, in the side pane, on the **Tools** tab, find the `VulnerabilityTools` collection card, click the three dots, and click **Copy link to MCP server**.
+2. In VS Code, open the Command Palette (`Ctrl + Shift + P`) → **MCP: Add Server** → **HTTP (HTTP or Server-Sent Events)**.
+3. Paste the collection URL and give it a Server ID `Vulnerability Tools`.
+4. Authenticate when prompted. The new `get_host_vulnerabilities` tool will now appear alongside the built-in Sentinel MCP tools in the GitHub Copilot Chat tools list.
+
+### Step 4 — Verify in Copilot Chat
+
+Open GitHub Copilot Chat in **Agent mode** and confirm `get_host_vulnerabilities` appears in the tools icon list. You are now ready to use prompt 11 below.
+
+---
+
+## 12 — Custom Tool Demo: Endpoint Vulnerability Lookup
+
+**Collection:** Custom (`Vulnerability Tools`) | **Tools:** `get_host_vulnerabilities`
+
+> *"Using the CrowdStrike vulnerability tool, look up all open vulnerabilities on the host win11a. List each CVE with its severity, CVSS score, and recommended remediation. Then tell me which vulnerability is the most critical and what the blast radius could be if it were exploited."*
+
+**What the customer sees:** The AI calls `get_host_vulnerabilities` with `Hostname = win11a`, receives a structured table of CVEs sorted by CVSS score, and reasons over the results to rank risk and explain potential attacker impact. This demonstrates how custom tools give security teams fine-grained control over what data AI agents can access — turning a saved KQL query into a reusable, discoverable capability without writing any code.
+
+---
+
 ## Quick Reference — MCP Capabilities Showcased
 
 | # | Prompt | Collection | Tools Used | Visual? | Key Feature |
@@ -153,6 +232,7 @@ Additionally, **Sentinel Graph** provides unified graph analytics (attack paths,
 | 8 | Advanced Hunting | Triage | `RunAdvancedHuntingQuery` | | Defender hunting engine |
 | 9 | Alert Heatmap | Data Exploration | `query_lake` + Mermaid | ✅ | Alert distribution chart |
 | 10 | Data Source Health | Data Exploration | `search_tables` + `query_lake` + Mermaid | ✅ | Connector health + arch diagram |
+| 11 | Custom Tool Demo | Custom (`Vulnerability Tools`) | `get_host_vulnerabilities` | | Custom KQL tool + parameterisation |
 
 ---
 
@@ -169,5 +249,5 @@ Congratulations, you have completed this exercise! You can now continue to the n
 - [Use an MCP tool in Visual Studio Code](https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-use-tool-visual-studio-code) — setup guide
 - [Tool collections in Microsoft Sentinel MCP server](https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-tools-overview) — full tool reference
 - [Get started with Microsoft Sentinel MCP server](https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-get-started) — overview & prerequisites
-- [Create and use custom Microsoft Sentinel MCP tools](https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-create-custom-tool) — custom tool authoring
+- [Create and use custom Microsoft Sentinel MCP tools](https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-create-custom-tool) — step-by-step guide for authoring parameterised custom tools from KQL queries
 
