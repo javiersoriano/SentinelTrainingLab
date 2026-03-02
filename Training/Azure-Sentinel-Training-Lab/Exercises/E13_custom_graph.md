@@ -1,4 +1,4 @@
-# Exercise 13 - Creating a Custom Graph in Microsoft Sentinel (Hands‑On, Step by Step)
+# Exercise 13 - Creating a Custom Graph in Microsoft Sentinel
 
 As you saw in exercise 12, there are several native experiences to use Sentinel graph available in the Defender portal. However, users might want to be able to create their own custom graph representations for their own data.
 
