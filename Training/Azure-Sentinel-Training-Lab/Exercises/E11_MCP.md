@@ -31,7 +31,8 @@ The Sentinel MCP server is **not** just data lake querying. It exposes **three d
 |---|---|---|
 | **Data Exploration** | `https://sentinel.microsoft.com/mcp/data-exploration` | `search_tables`, `query_lake`, `analyze_user_entity`, `analyze_url_entity`, `list_sentinel_workspaces` — explore and query raw data in the Sentinel Data Lake |
 | **Triage** | `https://sentinel.microsoft.com/mcp/triage` | `ListIncidents`, `GetIncidentById`, `ListAlerts`, `GetAlertByID`, `RunAdvancedHuntingQuery`, `GetDefenderFileInfo`, `GetDefenderIpAlerts`, `GetDefenderMachine`, `GetDefenderMachineAlerts`, `ListDefenderIndicators`, `ListDefenderInvestigations`, + more — direct API access to Defender XDR incidents, alerts, devices, files, IOCs, vulnerabilities, and automated investigations |
-| **Security Copilot Agent Creation** | `https://sentinel.microsoft.com/mcp/security-copilot-agent-creation` | Create Security Copilot agents for complex workflows |
+|**Graph**|`https://sentinel.microsoft.com/mcp/graph`| `find_nodes`, `find_connected_nodes`, `find_walkable_paths`, `exposure_perimeter`, `find_blastradius` - make the graph-powered insights accessible to the AI agents|
+| **(Optional) Security Copilot Agent Creation** | `https://sentinel.microsoft.com/mcp/security-copilot-agent-creation` | Create Security Copilot agents for complex workflows |
 
 Additionally, **Sentinel Graph** provides unified graph analytics (attack paths, blast radius, graph-based hunting) — it auto-provisions when the Data Lake is enabled and powers experiences in the Defender portal. The graph is accessed through the Defender portal UI and through MCP's triage tools (incident graph, entity relationships).
 
