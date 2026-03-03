@@ -178,9 +178,6 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
             "condition": "[parameters('enableIngestion')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'workspaceCreation')]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "expressionEvaluationOptions": {
