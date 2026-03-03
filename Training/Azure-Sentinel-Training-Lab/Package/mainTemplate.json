@@ -141,32 +141,6 @@
             }
         },
         {
-            "name": "workspaceCreation",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('_artifactsLocation'), concat('Artifacts/LinkedTemplates/workspace.json?v=', parameters('artifactsVersion')))]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "[parameters('workspaceName')]"
-                    },
-                    "pricingTier": {
-                        "value": "PerGB2018"
-                    },
-                    "dataRetention": {
-                        "value": 90
-                    },
-                    "location": {
-                        "value": "[parameters('workspace-location')]"
-                    }
-                }
-            }
-        },
-        {
             "name": "deployDetectionRules",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
