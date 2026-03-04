@@ -157,7 +157,9 @@ Start with the **Onboarding** exercise to set up your workspace, install solutio
 
 [**Exercise 11 — Sentinel MCP Server Demo Prompts**](./Exercises/E11_MCP.md)
 
-[**Exercise 12 — Building custom graphs**](./Exercises/E12_custom_graph.md)
+[**Exercise 12 — Sentinel graph**](./Exercises/E12_sentinel_graph.md)
+
+[**Exercise 13 — Building custom graphs**](./Exercises/E13_custom_graph.md)
 
 ---
 
