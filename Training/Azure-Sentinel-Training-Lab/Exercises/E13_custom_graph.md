@@ -53,6 +53,7 @@ These two files instruct GitHub Copilot how to create a custom graph using a Jup
 ![VibeGraphing1](../Images/VibeGraphing4.jpg)
 5. A tab similar to the one below appears. Select **graph medium pool (32 vCores)** as the Cluster configuration
 6. Under **Schedule**, select **On demand**. Click on **Submit** in the top right.
+
 ![VibeGraphing1](../Images/VibeGraphing5.jpg)
 7.  After a minute or two, you will see your custom graph listed in the Microsoft Sentinel extension
 
@@ -64,9 +65,13 @@ These two files instruct GitHub Copilot how to create a custom graph using a Jup
 
 ## 4. Run a graph query
 
-Once your new custom graph is ready, you can query it withing VSCode:
+Once your new custom graph is ready, you can query it withing VSCode job tab:
 
+`MATCH (dev:device)-[ext:device_has_external_ip]->(extip:ip_address)
+WHERE dev.Hostname = 'win11a'
+RETURN *`
 
+![VibeGraphing8](../Images/VibeGraphing8.jpg)
 ---
 
 ## Next steps
