@@ -69,8 +69,21 @@ $ResourceGroupName = ConvertTo-RunbookStringValue -Value $ResourceGroupName
 $Location = ConvertTo-RunbookStringValue -Value $Location
 $WorkspaceName = ConvertTo-RunbookStringValue -Value $WorkspaceName
 
-if (-not $SubscriptionId -or -not $ResourceGroupName -or -not $Location -or -not $WorkspaceName) {
-    throw "Missing required runbook parameters. Provide SubscriptionId/ResourceGroupName/Location/WorkspaceName via jobSchedule parameters or set Automation variables: SentinelTrainingSubscriptionId, SentinelTrainingResourceGroupName, SentinelTrainingLocation, SentinelTrainingWorkspaceName."
+if (-not $SubscriptionId -or -not $ResourceGroupName -or -not $WorkspaceName) {
+    throw "Missing required runbook parameters. Provide SubscriptionId/ResourceGroupName/WorkspaceName via jobSchedule parameters or set Automation variables: SentinelTrainingSubscriptionId, SentinelTrainingResourceGroupName, SentinelTrainingWorkspaceName."
+}
+
+# Always resolve location from the workspace itself so that DCE/DCR resources
+# are created in the correct region, regardless of where the resource group is.
+try {
+    $workspace = Get-AzOperationalInsightsWorkspace -ResourceGroupName $ResourceGroupName -Name $WorkspaceName -ErrorAction Stop
+    $Location = $workspace.Location
+    Write-Output "Resolved workspace location: $Location"
+} catch {
+    if (-not $Location) {
+        throw "Could not resolve workspace location and no -Location parameter was provided. Error: $_"
+    }
+    Write-Warning "Could not resolve workspace location (using provided value '$Location'): $_"
 }
 
 $workdir = Join-Path -Path $env:TEMP -ChildPath "sentinel-training-demo"
